@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { Sparkles, Star } from "lucide-react";
 import { HealthHero } from "@/components/HealthHero";
-import { HealthQuest } from "@/components/HealthQuest";
+import { QuestList } from "@/components/QuestList";
+import { PointsCounter } from "@/components/PointsCounter";
 import {
   getUserProgress,
   saveUserProgress,
@@ -109,9 +110,10 @@ export default function Home() {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
-        <div className="grid gap-8 md:grid-cols-2 lg:gap-12">
+        <div className="flex flex-col gap-6">
           <HealthHero progress={progress} />
-          <HealthQuest tasks={quest} onTaskToggle={handleTaskToggle} />
+          <PointsCounter tasks={quest} />
+          <QuestList tasks={quest} onTaskToggle={handleTaskToggle} />
         </div>
       </div>
     </div>
