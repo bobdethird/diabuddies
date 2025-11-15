@@ -11,7 +11,7 @@ import {
   resetDailyQuestIfNeeded,
 } from "@/lib/storage";
 import { calculateLevel } from "@/lib/leveling";
-import type { UserProgress, HealthTask } from "@/types";
+import type { UserProgress, HealthTask, DetailedInsight } from "@/types";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -23,6 +23,7 @@ export default function Home() {
   }));
   const [quest, setQuest] = useState<HealthTask[]>([]);
   const [healthInsights, setHealthInsights] = useState<string[]>([]);
+  const [detailedInsights, setDetailedInsights] = useState<DetailedInsight[]>([]);
 
   // Load data only on client side to avoid hydration mismatch
   useEffect(() => {
@@ -85,7 +86,7 @@ export default function Home() {
     });
   };
 
-  const handleTasksGenerated = (newTasks: HealthTask[], insights?: string[]) => {
+  const handleTasksGenerated = (newTasks: HealthTask[], insights?: string[], detailedInsightsData?: DetailedInsight[]) => {
     // Merge new AI-generated tasks with existing tasks
     // Keep existing default quests and add new AI-generated tasks
     setQuest((prevTasks) => {
@@ -126,6 +127,11 @@ export default function Home() {
     if (insights && insights.length > 0) {
       setHealthInsights(insights);
     }
+    
+    // Store detailed insights for modal
+    if (detailedInsightsData && detailedInsightsData.length > 0) {
+      setDetailedInsights(detailedInsightsData);
+    }
   };
 
   return (
@@ -160,7 +166,7 @@ export default function Home() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
         <div className="flex flex-col gap-6">
-          <HealthHero progress={progress} healthInsights={healthInsights} />
+          <HealthHero progress={progress} healthInsights={healthInsights} detailedInsights={detailedInsights} />
           <PointsCounter tasks={quest} />
           <QuestList tasks={quest} onTaskToggle={handleTaskToggle} />
         </div>

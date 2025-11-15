@@ -17,3 +17,13 @@ export interface DailyQuest {
   date: string; // ISO date string for tracking when quest was created
 }
 
+export interface DetailedInsight {
+  title: string;
+  userValue: string; // The actual stat from PDF
+  referenceValue: string; // Normal range or average
+  isGood: boolean; // Whether the stat is good or needs attention
+  explanation: string; // Simple explanation (what's good/bad)
+  action: string; // What to do
+  simpleExplanation: string; // Why it matters, child-friendly
+}
+

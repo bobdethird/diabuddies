@@ -97,11 +97,30 @@ Generate 5-8 simple tasks based on the report. Examples:
 
 Also provide 2-3 VERY SHORT tips (one sentence each, max 8 words) for a 6-year-old. Keep it super simple and fun!
 
+IMPORTANT: Extract specific stats/metrics from the PDF (blood sugar levels, hydration, exercise, etc.) and create detailed insights. For each stat found:
+- Extract the actual value from the PDF
+- Provide a reference point (normal range or average for kids)
+- Determine if it's good or needs attention
+- Write simple explanations for a 6-year-old
+
 Return JSON:
 {
   "tasks": [{"id": "task-id", "title": "Task name", "points": 10, "completed": false}],
-  "insights": ["Short tip 1", "Short tip 2"]
-}`,
+  "insights": ["Short tip 1", "Short tip 2"],
+  "detailedInsights": [
+    {
+      "title": "Blood Sugar",
+      "userValue": "180",
+      "referenceValue": "100-140",
+      "isGood": false,
+      "explanation": "Your blood sugar is a bit high",
+      "action": "Try checking before meals",
+      "simpleExplanation": "Lower numbers are better!"
+    }
+  ]
+}
+
+Only include stats that are actually in the PDF. Use general reference points like "Most kids have..." or "Normal is..." for comparison.`,
               },
             ],
           },
@@ -122,7 +141,7 @@ Return JSON:
     const responseText = messageData.content[0].text;
 
     // Parse the JSON response from Claude
-    let tasks, insights;
+    let tasks, insights, detailedInsights;
     try {
       // Extract JSON from markdown code blocks if present
       const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/) || 
@@ -131,6 +150,7 @@ Return JSON:
       const parsed = JSON.parse(jsonText);
       tasks = parsed.tasks || parsed;
       insights = parsed.insights || [];
+      detailedInsights = parsed.detailedInsights || [];
     } catch (parseError) {
       console.error("Failed to parse AI response:", parseError);
       return Response.json(
@@ -160,9 +180,36 @@ Return JSON:
       ? insights.filter((insight: any) => typeof insight === "string" && insight.trim().length > 0)
       : [];
 
+    // Validate detailed insights
+    const validatedDetailedInsights = Array.isArray(detailedInsights)
+      ? detailedInsights
+          .filter((insight: any) => {
+            return (
+              typeof insight === "object" &&
+              insight.title &&
+              insight.userValue &&
+              insight.referenceValue &&
+              typeof insight.isGood === "boolean" &&
+              insight.explanation &&
+              insight.action &&
+              insight.simpleExplanation
+            );
+          })
+          .map((insight: any) => ({
+            title: String(insight.title),
+            userValue: String(insight.userValue),
+            referenceValue: String(insight.referenceValue),
+            isGood: Boolean(insight.isGood),
+            explanation: String(insight.explanation),
+            action: String(insight.action),
+            simpleExplanation: String(insight.simpleExplanation),
+          }))
+      : [];
+
     return Response.json({ 
       tasks: validatedTasks,
-      insights: validatedInsights 
+      insights: validatedInsights,
+      detailedInsights: validatedDetailedInsights
     });
   } catch (error) {
     console.error("Error processing PDF:", error);

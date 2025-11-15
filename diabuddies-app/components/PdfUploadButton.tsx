@@ -3,10 +3,10 @@
 import { useState, useRef } from "react";
 import { Upload, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { HealthTask } from "@/types";
+import type { HealthTask, DetailedInsight } from "@/types";
 
 interface PdfUploadButtonProps {
-  onTasksGenerated: (tasks: HealthTask[], insights?: string[]) => void;
+  onTasksGenerated: (tasks: HealthTask[], insights?: string[], detailedInsights?: DetailedInsight[]) => void;
 }
 
 export function PdfUploadButton({ onTasksGenerated }: PdfUploadButtonProps) {
@@ -50,7 +50,7 @@ export function PdfUploadButton({ onTasksGenerated }: PdfUploadButtonProps) {
       const data = await response.json();
       
       if (data.tasks && Array.isArray(data.tasks)) {
-        onTasksGenerated(data.tasks, data.insights);
+        onTasksGenerated(data.tasks, data.insights, data.detailedInsights);
       } else {
         throw new Error("Invalid response format");
       }

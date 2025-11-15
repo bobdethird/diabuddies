@@ -8,11 +8,14 @@ import {
   getProgressToNextLevel,
   getPointsNeededForNextLevel,
 } from "@/lib/leveling";
-import type { UserProgress } from "@/types";
+import type { UserProgress, DetailedInsight } from "@/types";
+import { DetailedTipsModal } from "./DetailedTipsModal";
+import { Button } from "@/components/ui/button";
 
 interface HealthHeroProps {
   progress: UserProgress;
   healthInsights?: string[];
+  detailedInsights?: DetailedInsight[];
 }
 
 /**
@@ -36,11 +39,12 @@ function getNextEvolutionImage(level: number): string {
   return "/second evolution.png";
 }
 
-export function HealthHero({ progress, healthInsights = [] }: HealthHeroProps) {
+export function HealthHero({ progress, healthInsights = [], detailedInsights = [] }: HealthHeroProps) {
   const [mounted, setMounted] = useState(false);
   const [displayProgress, setDisplayProgress] = useState(0);
   const [isLevelingUp, setIsLevelingUp] = useState(false);
   const [showPowerUp, setShowPowerUp] = useState(false);
+  const [showDetailedTips, setShowDetailedTips] = useState(false);
   const previousLevelRef = useRef(progress.level);
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -242,6 +246,17 @@ export function HealthHero({ progress, healthInsights = [] }: HealthHeroProps) {
                         </div>
                       ))}
                     </div>
+                    {/* Learn More Button */}
+                    {detailedInsights.length > 0 && (
+                      <div className="mt-4">
+                        <Button
+                          onClick={() => setShowDetailedTips(true)}
+                          className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold text-sm py-2 rounded-lg shadow-md transition-all hover:scale-105"
+                        >
+                          Learn More 📚
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
                 {/* Speech bubble tail pointing left */}
@@ -273,6 +288,17 @@ export function HealthHero({ progress, healthInsights = [] }: HealthHeroProps) {
                         </div>
                       ))}
                     </div>
+                    {/* Learn More Button */}
+                    {detailedInsights.length > 0 && (
+                      <div className="mt-4">
+                        <Button
+                          onClick={() => setShowDetailedTips(true)}
+                          className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold text-sm py-2 rounded-lg shadow-md transition-all hover:scale-105"
+                        >
+                          Learn More 📚
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
                 {/* Speech bubble tail pointing up */}
@@ -283,6 +309,13 @@ export function HealthHero({ progress, healthInsights = [] }: HealthHeroProps) {
             </div>
           )}
         </div>
+
+        {/* Detailed Tips Modal */}
+        <DetailedTipsModal
+          insights={detailedInsights}
+          isOpen={showDetailedTips}
+          onClose={() => setShowDetailedTips(false)}
+        />
 
         {/* Circular Level Badge */}
         <div className="flex flex-col items-center gap-4 mb-6">
