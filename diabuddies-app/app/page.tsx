@@ -17,17 +17,34 @@ import { calculateLevel } from "@/lib/leveling";
 import type { UserProgress, HealthTask } from "@/types";
 
 export default function Home() {
-  const [progress, setProgress] = useState<UserProgress>(() =>
-    getUserProgress()
-  );
-  const [quest, setQuest] = useState<HealthTask[]>(() => {
-    const dailyQuest = getDailyQuest();
-    return dailyQuest.tasks;
-  });
+  const [mounted, setMounted] = useState(false);
+  const [progress, setProgress] = useState<UserProgress>(() => ({
+    level: 1,
+    currentHealth: 0,
+    totalHealth: 10,
+    totalPoints: 0,
+  }));
+  const [quest, setQuest] = useState<HealthTask[]>([]);
 
-  // Reset quest if new day on mount
+  // Load data only on client side to avoid hydration mismatch
   useEffect(() => {
-    const updatedQuest = resetDailyQuestIfNeeded();
+    setMounted(true);
+    const initialProgress = getUserProgress();
+    const updatedQuest = resetDailyQuestIfNeeded();    
+    // Ensure level is calculated correctly based on totalPoints
+    const correctLevel = calculateLevel(initialProgress.totalPoints);
+    
+    const syncedProgress: UserProgress = {
+      ...initialProgress,
+      level: correctLevel,
+    };
+    
+    // Update if level was incorrect
+    if (syncedProgress.level !== initialProgress.level) {
+      saveUserProgress(syncedProgress);
+    }
+    
+    setProgress(syncedProgress);
     setQuest(updatedQuest.tasks);
   }, []);
 

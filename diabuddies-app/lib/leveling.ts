@@ -16,16 +16,17 @@ export function getPointsForLevel(level: number): number {
 
 /**
  * Calculates the total points needed to reach a level
- * This is cumulative - level 2 needs 10+25=35 total points
+ * Level 1 starts at 0 points, level 2 needs 10, level 3 needs 35, etc.
  */
 export function getTotalPointsForLevel(level: number): number {
   if (level <= 0) return 0;
-  if (level === 1) return 10;
-  if (level === 2) return 35; // 10 + 25
-  if (level === 3) return 85; // 10 + 25 + 50
+  if (level === 1) return 0; // Level 1 starts at 0 points
+  if (level === 2) return 10; // Need 10 points to reach level 2
+  if (level === 3) return 35; // Need 35 points to reach level 3 (10 + 25)
+  if (level === 4) return 85; // Need 85 points to reach level 4 (10 + 25 + 50)
   
-  // Level 4+: 85 + (level - 3) * 100
-  return 85 + (level - 3) * 100;
+  // Level 5+: 85 + (level - 4) * 100
+  return 85 + (level - 4) * 100;
 }
 
 /**

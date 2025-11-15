@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { Sparkles, Star } from "lucide-react";
+import confetti from "canvas-confetti";
 import {
   getProgressToNextLevel,
   getPointsNeededForNextLevel,
@@ -35,15 +36,100 @@ function getNextEvolutionImage(level: number): string {
 }
 
 export function HealthHero({ progress }: HealthHeroProps) {
-  const progressPercent = getProgressToNextLevel(
-    progress.totalPoints,
-    progress.level
-  );
-  const pointsNeeded = getPointsNeededForNextLevel(
-    progress.totalPoints,
-    progress.level
-  );
+  const [mounted, setMounted] = useState(false);
+  const [displayProgress, setDisplayProgress] = useState(0);
+  const [isLevelingUp, setIsLevelingUp] = useState(false);
+  const [showPowerUp, setShowPowerUp] = useState(false);
+  const previousLevelRef = useRef(progress.level);
+  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  useEffect(() => {
+    setMounted(true);
+    const initialProgress = getProgressToNextLevel(progress.totalPoints, progress.level);
+    setDisplayProgress(initialProgress);
+    previousLevelRef.current = progress.level;
+  }, []);
+
+  const actualProgressPercent = mounted
+    ? getProgressToNextLevel(progress.totalPoints, progress.level)
+    : 0;
+  const pointsNeeded = mounted
+    ? getPointsNeededForNextLevel(progress.totalPoints, progress.level)
+    : 0;
+
+  // Detect level-up and trigger animation
+  useEffect(() => {
+    if (!mounted) return;
+
+    const previousLevel = previousLevelRef.current;
+    const currentLevel = progress.level;
+
+    // Level up detected!
+    if (currentLevel > previousLevel) {
+      // Clear any existing timeout
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
+      }
+
+      setIsLevelingUp(true);
+      
+      // Animate progress bar to 100%
+      setDisplayProgress(100);
+
+      // After reaching 100%, show power-up animation
+      setTimeout(() => {
+        setShowPowerUp(true);
+        
+        // Trigger confetti celebration
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ["#58CC02", "#FFD700", "#1CB0F6", "#FF6B6B", "#4ECDC4"],
+        });
+
+        // Additional burst
+        setTimeout(() => {
+          confetti({
+            particleCount: 50,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: ["#58CC02", "#FFD700"],
+          });
+          confetti({
+            particleCount: 50,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: ["#1CB0F6", "#FF6B6B"],
+          });
+        }, 200);
+      }, 600);
+
+      // After power-up animation, transition to new level progress
+      animationTimeoutRef.current = setTimeout(() => {
+        setShowPowerUp(false);
+        setIsLevelingUp(false);
+        setDisplayProgress(actualProgressPercent);
+        previousLevelRef.current = currentLevel;
+      }, 2000);
+    } else {
+      // Normal progress update (no level up)
+      if (!isLevelingUp) {
+        setDisplayProgress(actualProgressPercent);
+      }
+      previousLevelRef.current = currentLevel;
+    }
+
+    return () => {
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
+      }
+    };
+  }, [progress.level, progress.totalPoints, mounted, actualProgressPercent, isLevelingUp]);
+
+  const progressPercent = displayProgress;
   const heroImage = getHeroEvolutionImage(progress.level);
   const nextEvolutionImage = getNextEvolutionImage(progress.level);
   const [isVisible, setIsVisible] = useState(true);
@@ -132,17 +218,32 @@ export function HealthHero({ progress }: HealthHeroProps) {
         {/* Circular Level Badge */}
         <div className="flex flex-col items-center gap-4 mb-6">
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full blur-lg opacity-50 animate-pulse-slow" />
-            <div className="relative bg-gradient-to-br from-blue-500 to-purple-600 rounded-full w-24 h-24 flex items-center justify-center shadow-xl border-4 border-white">
+            <div className={`absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full blur-lg opacity-50 animate-pulse-slow transition-all duration-300 ${
+              showPowerUp ? "scale-150 opacity-75" : ""
+            }`} />
+            <div className={`relative bg-gradient-to-br from-blue-500 to-purple-600 rounded-full w-24 h-24 flex items-center justify-center shadow-xl border-4 border-white transition-all duration-300 ${
+              showPowerUp ? "scale-110 border-yellow-400 shadow-2xl shadow-yellow-400/50" : ""
+            }`}>
               <div className="text-center">
                 <div className="text-xs text-white/80 font-semibold uppercase tracking-wide">
                   Level
                 </div>
-                <div className="text-4xl font-bold text-white drop-shadow-lg">
+                <div className={`text-4xl font-bold text-white drop-shadow-lg transition-all duration-300 ${
+                  showPowerUp ? "scale-125 text-yellow-300" : ""
+                }`}>
                   {progress.level}
                 </div>
               </div>
             </div>
+            {/* Power-up particles around badge */}
+            {showPowerUp && (
+              <>
+                <Sparkles className="absolute -top-2 -left-2 w-6 h-6 text-yellow-400 animate-bounce" />
+                <Star className="absolute -top-2 -right-2 w-5 h-5 text-yellow-300 animate-bounce delay-100" />
+                <Sparkles className="absolute -bottom-2 -left-2 w-5 h-5 text-yellow-400 animate-bounce delay-200" />
+                <Star className="absolute -bottom-2 -right-2 w-6 h-6 text-yellow-300 animate-bounce delay-300" />
+              </>
+            )}
           </div>
         </div>
 
@@ -150,17 +251,43 @@ export function HealthHero({ progress }: HealthHeroProps) {
         <div className="space-y-3 mb-6">
           <div className="flex justify-between items-center text-sm">
             <span className="font-semibold text-gray-700">Progress to Next Level</span>
-            <span className="font-bold text-lg text-orange-600">{Math.round(progressPercent)}%</span>
+            <span className={`font-bold text-lg transition-colors duration-300 ${
+              showPowerUp ? "text-yellow-500 scale-110" : "text-orange-600"
+            }`}>
+              {showPowerUp ? "LEVEL UP! 🎉" : `${Math.round(progressPercent)}%`}
+            </span>
           </div>
           
           {/* Custom Pill Progress Bar */}
           <div className="relative h-8 bg-gray-200 rounded-full overflow-hidden shadow-inner border-2 border-gray-300">
             <div
-              className="h-full bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 rounded-full transition-all duration-500 ease-out shadow-lg animate-progress-fill"
-              style={{ width: `${progressPercent}%` }}
+              className={`h-full bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 rounded-full shadow-lg transition-all ease-out ${
+                isLevelingUp ? "duration-[600ms]" : "duration-500"
+              } ${
+                showPowerUp ? "animate-pulse brightness-125" : ""
+              }`}
+              style={{ width: `${Math.max(0, Math.min(100, progressPercent))}%` }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse-slow" />
+              {showPowerUp && (
+                <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-white to-yellow-300 animate-shimmer opacity-75" />
+              )}
             </div>
+            {/* Progress indicator dot */}
+            {progressPercent > 0 && (
+              <div
+                className={`absolute top-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full border-2 border-orange-500 shadow-lg transition-all ease-out ${
+                  isLevelingUp ? "duration-[600ms]" : "duration-500"
+                } ${
+                  showPowerUp ? "border-yellow-400 scale-125 animate-pulse" : ""
+                }`}
+                style={{ left: `calc(${Math.max(0, Math.min(100, progressPercent))}% - 12px)` }}
+              />
+            )}
+            {/* Power-up glow effect */}
+            {showPowerUp && (
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-white to-yellow-400 rounded-full opacity-50 animate-pulse blur-sm" />
+            )}
           </div>
           
           {/* Encouraging Message */}
