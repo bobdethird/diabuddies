@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { Sparkles, Star } from "lucide-react";
 import {
   getProgressToNextLevel,
   getPointsNeededForNextLevel,
@@ -21,11 +20,18 @@ interface HealthHeroProps {
  * Level 3: Third evolution (35-84 points)
  * Level 4+: Fourth evolution (85+ points)
  */
-function getHeroEvolution(level: number): string {
+function getHeroEvolutionImage(level: number): string {
   if (level >= 4) return "/fourth evolution.png";
   if (level >= 3) return "/third evolution.png";
   if (level >= 2) return "/second evolution.png";
   return "/first evolution.png";
+}
+
+function getNextEvolutionImage(level: number): string {
+  if (level >= 4) return "/fourth evolution.png";
+  if (level >= 3) return "/fourth evolution.png";
+  if (level >= 2) return "/third evolution.png";
+  return "/second evolution.png";
 }
 
 export function HealthHero({ progress }: HealthHeroProps) {
@@ -38,7 +44,8 @@ export function HealthHero({ progress }: HealthHeroProps) {
     progress.level
   );
 
-  const heroImage = getHeroEvolution(progress.level);
+  const heroImage = getHeroEvolutionImage(progress.level);
+  const nextEvolutionImage = getNextEvolutionImage(progress.level);
   const [isVisible, setIsVisible] = useState(true);
   const [currentImage, setCurrentImage] = useState(heroImage);
 
@@ -53,63 +60,152 @@ export function HealthHero({ progress }: HealthHeroProps) {
     }
   }, [heroImage, currentImage]);
 
+  // Determine gradient colors based on level
+  const gradientColors =
+    progress.level >= 4
+      ? "from-purple-400 via-pink-400 to-orange-400"
+      : progress.level >= 3
+      ? "from-blue-400 via-cyan-400 to-teal-400"
+      : progress.level >= 2
+      ? "from-green-400 via-emerald-400 to-teal-400"
+      : "from-orange-400 via-yellow-400 to-pink-400";
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Your Health Hero</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col items-center gap-6">
-        {/* Hero Character with Animation */}
-        <div className="relative h-[200px] w-[200px] flex items-center justify-center">
-          <div className="animate-bounce-slow relative">
-            <Image
-              src={currentImage}
-              alt="Health Hero"
-              width={200}
-              height={200}
-              className={`drop-shadow-2xl transition-all duration-500 hover:scale-110 animate-pulse-gentle ${
-                isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
-              }`}
-              priority
-            />
-            {/* Glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-t from-primary/30 via-primary/10 to-transparent rounded-full blur-2xl animate-pulse-slow -z-10" />
-            {/* Sparkle effect for higher levels */}
-            {progress.level >= 3 && (
-              <div className="absolute inset-0 animate-sparkle">
-                <div className="absolute top-2 left-4 w-2 h-2 bg-yellow-400 rounded-full opacity-75" />
-                <div className="absolute top-8 right-6 w-1.5 h-1.5 bg-yellow-300 rounded-full opacity-60" />
-                <div className="absolute bottom-6 left-8 w-1.5 h-1.5 bg-yellow-400 rounded-full opacity-70" />
+    <div className="relative">
+      {/* Hero Card with Glow */}
+      <div className="relative rounded-3xl bg-white p-8 shadow-2xl border-4 border-orange-200 overflow-hidden">
+        {/* Bubble Gradient Background */}
+        <div
+          className={`absolute inset-0 bg-gradient-to-br ${gradientColors} opacity-20 blur-3xl -z-10`}
+        />
+        
+        {/* Ambient Particles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <Star className="absolute top-8 left-12 w-3 h-3 text-yellow-400 animate-float opacity-60" />
+          <Sparkles className="absolute top-16 right-16 w-2.5 h-2.5 text-pink-400 animate-float-delayed opacity-50" />
+          <Star className="absolute bottom-20 left-20 w-2 h-2 text-blue-400 animate-float opacity-40" />
+          <Sparkles className="absolute bottom-12 right-12 w-3 h-3 text-purple-400 animate-float-delayed opacity-50" />
+        </div>
+
+        {/* "Your Health Hero" Badge */}
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-400 to-pink-400 text-white px-6 py-2 rounded-full shadow-lg mb-4">
+            <Sparkles className="w-4 h-4" />
+            <span className="font-bold text-lg">Your Health Hero</span>
+            <Sparkles className="w-4 h-4" />
+          </div>
+        </div>
+
+        {/* Hero Avatar Section */}
+        <div className="relative flex items-center justify-center mb-8">
+          <div className="relative">
+            {/* Glow Halo */}
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-300 via-pink-300 to-purple-300 rounded-full blur-2xl opacity-60 animate-pulse-slow -z-10 scale-150" />
+            
+            {/* Hero Image */}
+            <div className="relative h-[260px] w-[260px] flex items-center justify-center">
+              <div className="animate-bounce-slow relative">
+                <Image
+                  src={currentImage}
+                  alt="Health Hero"
+                  width={260}
+                  height={260}
+                  className={`drop-shadow-2xl transition-all duration-500 hover:scale-110 animate-pulse-gentle ${
+                    isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                  }`}
+                  priority
+                />
+                {/* Sparkle effect for higher levels */}
+                {progress.level >= 3 && (
+                  <div className="absolute inset-0 animate-sparkle">
+                    <div className="absolute top-4 left-6 w-2.5 h-2.5 bg-yellow-400 rounded-full opacity-75" />
+                    <div className="absolute top-12 right-8 w-2 h-2 bg-yellow-300 rounded-full opacity-60" />
+                    <div className="absolute bottom-8 left-10 w-2 h-2 bg-yellow-400 rounded-full opacity-70" />
+                    <div className="absolute bottom-12 right-6 w-2.5 h-2.5 bg-yellow-300 rounded-full opacity-65" />
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
         </div>
 
-        {/* Level Badge */}
-        <div className="flex flex-col items-center gap-2">
-          <div className="text-sm text-muted-foreground">Level</div>
-          <div className="text-4xl font-bold"> {progress.level}</div>
+        {/* Circular Level Badge */}
+        <div className="flex flex-col items-center gap-4 mb-6">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full blur-lg opacity-50 animate-pulse-slow" />
+            <div className="relative bg-gradient-to-br from-blue-500 to-purple-600 rounded-full w-24 h-24 flex items-center justify-center shadow-xl border-4 border-white">
+              <div className="text-center">
+                <div className="text-xs text-white/80 font-semibold uppercase tracking-wide">
+                  Level
+                </div>
+                <div className="text-4xl font-bold text-white drop-shadow-lg">
+                  {progress.level}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Health Bar */}
-        <div className="w-full space-y-2">
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Progress to Next Level</span>
-            <span className="font-medium">{Math.round(progressPercent)}%</span>
+        {/* Pill-Shaped Progress Bar */}
+        <div className="space-y-3 mb-6">
+          <div className="flex justify-between items-center text-sm">
+            <span className="font-semibold text-gray-700">Progress to Next Level</span>
+            <span className="font-bold text-lg text-orange-600">{Math.round(progressPercent)}%</span>
           </div>
-          <Progress value={progressPercent} className="h-3" />
-          <div className="text-center text-sm text-muted-foreground">
-            {pointsNeeded} points to level {progress.level + 1}
+          
+          {/* Custom Pill Progress Bar */}
+          <div className="relative h-8 bg-gray-200 rounded-full overflow-hidden shadow-inner border-2 border-gray-300">
+            <div
+              className="h-full bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 rounded-full transition-all duration-500 ease-out shadow-lg animate-progress-fill"
+              style={{ width: `${progressPercent}%` }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse-slow" />
+            </div>
           </div>
+          
+          {/* Encouraging Message */}
+          <div className="text-center">
+            <p className="text-sm font-semibold text-gray-700">
+              {pointsNeeded > 0 ? (
+                <>
+                  <span className="text-orange-600">{pointsNeeded} points</span> until your hero evolves! 🚀
+                </>
+              ) : (
+                <span className="text-green-600">Ready to evolve! 🎉</span>
+              )}
+            </p>
+          </div>
+
+          {/* Next Evolution Preview (Mystery Unlock) */}
+          {pointsNeeded > 0 && progress.level < 4 && (
+            <div className="flex items-center justify-center gap-2 mt-4">
+              <span className="text-xs text-gray-500 font-medium">Next evolution:</span>
+              <div className="relative">
+                <Image
+                  src={nextEvolutionImage}
+                  alt="Next Evolution"
+                  width={40}
+                  height={40}
+                  className="opacity-30 blur-sm grayscale"
+                />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-xs font-bold text-gray-400">?</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Total Points */}
-        <div className="text-center">
-          <div className="text-sm text-muted-foreground">Total Points</div>
-          <div className="text-2xl font-semibold">{progress.totalPoints}</div>
+        {/* Total Points Display */}
+        <div className="text-center bg-gradient-to-r from-orange-100 to-pink-100 rounded-2xl p-4 border-2 border-orange-200">
+          <div className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">
+            Total Points
+          </div>
+          <div className="text-3xl font-bold gradient-text-orange">
+            {progress.totalPoints}
+          </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
-
