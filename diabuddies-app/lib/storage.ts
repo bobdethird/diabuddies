@@ -22,6 +22,40 @@ function getTodayDateString(): string {
 }
 
 /**
+ * Check if user is authenticated
+ */
+export function isAuthenticated(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem("diabuddies_authenticated") === "true";
+}
+
+/**
+ * Get user name from storage
+ */
+export function getUserName(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("diabuddies_user_name");
+}
+
+/**
+ * Save user authentication and name
+ */
+export function saveUserAuth(name: string): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem("diabuddies_authenticated", "true");
+  localStorage.setItem("diabuddies_user_name", name);
+}
+
+/**
+ * Clear user authentication
+ */
+export function clearUserAuth(): void {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem("diabuddies_authenticated");
+  localStorage.removeItem("diabuddies_user_name");
+}
+
+/**
  * Get default user progress
  */
 export function getUserProgress(): UserProgress {

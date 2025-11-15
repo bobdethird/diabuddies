@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Sparkles, Star } from "lucide-react";
 import { HealthHero } from "@/components/HealthHero";
 import { QuestList } from "@/components/QuestList";
@@ -9,12 +10,16 @@ import { PdfUploadButton } from "@/components/PdfUploadButton";
 import {
   getUserProgress,
   resetDailyQuestIfNeeded,
+  isAuthenticated,
+  getUserName,
 } from "@/lib/storage";
 import { calculateLevel } from "@/lib/leveling";
 import type { UserProgress, HealthTask, DetailedInsight } from "@/types";
 
 export default function Home() {
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
   const [progress, setProgress] = useState<UserProgress>(() => ({
     level: 1,
     currentHealth: 0,
@@ -25,9 +30,20 @@ export default function Home() {
   const [healthInsights, setHealthInsights] = useState<string[]>([]);
   const [detailedInsights, setDetailedInsights] = useState<DetailedInsight[]>([]);
 
-  // Load data only on client side to avoid hydration mismatch
+  // Check authentication and load data only on client side to avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
+    
+    // Check authentication
+    if (!isAuthenticated()) {
+      router.push("/signin");
+      return;
+    }
+    
+    // Get user name
+    const name = getUserName();
+    setUserName(name);
+    
     const initialProgress = getUserProgress();
     const updatedQuest = resetDailyQuestIfNeeded();    
     // Ensure level is calculated correctly based on totalPoints
@@ -40,7 +56,12 @@ export default function Home() {
     
     setProgress(syncedProgress);
     setQuest(updatedQuest.tasks);
-  }, []);
+  }, [router]);
+
+  // Don't render content until mounted and authenticated
+  if (!mounted || !isAuthenticated()) {
+    return null;
+  }
 
   const handleTaskToggle = (taskId: string) => {
     setQuest((prevTasks) => {
@@ -155,7 +176,7 @@ export default function Home() {
             <Star className="w-7 h-7 text-yellow-300 animate-sparkle" />
           </div>
           <p className="text-center text-xl md:text-2xl text-white/90 font-semibold drop-shadow-md mb-4">
-            Your Health Adventure Starts Today! ✨
+            {userName ? `Welcome back, ${userName}! ✨` : "Your Health Adventure Starts Today! ✨"}
           </p>
           <div className="flex justify-center">
             <PdfUploadButton onTasksGenerated={handleTasksGenerated} />
