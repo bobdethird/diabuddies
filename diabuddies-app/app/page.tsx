@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { HealthHero } from "@/components/HealthHero";
-import { HealthQuest } from "@/components/HealthQuest";
+import { QuestList } from "@/components/QuestList";
+import { PointsCounter } from "@/components/PointsCounter";
 import {
   getUserProgress,
   saveUserProgress,
@@ -89,9 +90,10 @@ export default function Home() {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="flex flex-col gap-6">
         <HealthHero progress={progress} />
-        <HealthQuest tasks={quest} onTaskToggle={handleTaskToggle} />
+        <PointsCounter tasks={quest} />
+        <QuestList tasks={quest} onTaskToggle={handleTaskToggle} />
       </div>
     </div>
   );

@@ -10,9 +10,14 @@ const STORAGE_KEYS = {
  * Default template tasks for daily quest
  */
 const DEFAULT_QUEST_TASKS: HealthTask[] = [
-  { id: "1", title: "Take morning insulin", points: 10, completed: false },
-  { id: "2", title: "Eat healthy breakfast", points: 5, completed: false },
-  { id: "3", title: "Drink 3 glasses of water", points: 5, completed: false },
+  { id: "morning-blood-sugar", title: "Morning Blood Sugar Check", points: 10, completed: true },
+  { id: "morning-insulin", title: "Take Morning Insulin", points: 10, completed: false },
+  { id: "healthy-breakfast", title: "Eat a Healthy Breakfast", points: 5, completed: false },
+  { id: "water-intake", title: "Drink 3 Glasses of Water", points: 5, completed: false },
+  { id: "afternoon-blood-sugar", title: "Afternoon Blood Sugar Check", points: 10, completed: false },
+  { id: "play-time", title: "10 Minutes of Play Time", points: 5, completed: false },
+  { id: "evening-blood-sugar", title: "Evening Blood Sugar Check", points: 10, completed: false },
+  { id: "bedtime-blood-sugar", title: "Bedtime Blood Sugar Check", points: 10, completed: false },
 ];
 
 /**
