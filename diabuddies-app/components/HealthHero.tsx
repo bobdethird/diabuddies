@@ -312,7 +312,7 @@ export function HealthHero({ progress }: HealthHeroProps) {
             </p>
           </div>
 
-          {/* Next Evolution Preview (Mystery Unlock) */}
+          {/* Next Evolution Preview */}
           {pointsNeeded > 0 && progress.level < 4 && (
             <div className="flex items-center justify-center gap-2 mt-4">
               <span className="text-xs text-gray-500 font-medium">Next evolution:</span>
@@ -322,11 +322,8 @@ export function HealthHero({ progress }: HealthHeroProps) {
                   alt="Next Evolution"
                   width={40}
                   height={40}
-                  className="opacity-30 blur-sm grayscale"
+                  className="opacity-60"
                 />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-xs font-bold text-gray-400">?</span>
-                </div>
               </div>
             </div>
           )}
