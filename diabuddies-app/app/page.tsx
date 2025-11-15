@@ -8,9 +8,6 @@ import { PointsCounter } from "@/components/PointsCounter";
 import { PdfUploadButton } from "@/components/PdfUploadButton";
 import {
   getUserProgress,
-  saveUserProgress,
-  getDailyQuest,
-  saveDailyQuest,
   resetDailyQuestIfNeeded,
 } from "@/lib/storage";
 import { calculateLevel } from "@/lib/leveling";
@@ -38,11 +35,6 @@ export default function Home() {
       ...initialProgress,
       level: correctLevel,
     };
-    
-    // Update if level was incorrect
-    if (syncedProgress.level !== initialProgress.level) {
-      saveUserProgress(syncedProgress);
-    }
     
     setProgress(syncedProgress);
     setQuest(updatedQuest.tasks);
@@ -85,16 +77,8 @@ export default function Home() {
           totalPoints: newTotalPoints,
         };
 
-        saveUserProgress(newProgress);
         return newProgress;
       });
-
-      // Save updated quest
-      const updatedQuest = {
-        tasks: updatedTasks,
-        date: new Date().toISOString().split("T")[0],
-      };
-      saveDailyQuest(updatedQuest);
 
       return updatedTasks;
     });
@@ -103,13 +87,6 @@ export default function Home() {
   const handleTasksGenerated = (newTasks: HealthTask[]) => {
     // Replace existing tasks with AI-generated ones
     setQuest(newTasks);
-    
-    // Save to localStorage
-    const updatedQuest = {
-      tasks: newTasks,
-      date: new Date().toISOString().split("T")[0],
-    };
-    saveDailyQuest(updatedQuest);
   };
 
   return (

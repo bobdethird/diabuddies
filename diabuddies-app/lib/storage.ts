@@ -1,16 +1,10 @@
 import type { UserProgress, DailyQuest, HealthTask } from "@/types";
 
-const STORAGE_KEYS = {
-  USER_PROGRESS: "diabuddies_user_progress",
-  DAILY_QUEST: "diabuddies_daily_quest",
-  QUEST_DATE: "diabuddies_quest_date",
-} as const;
-
 /**
  * Default template tasks for daily quest
  */
 const DEFAULT_QUEST_TASKS: HealthTask[] = [
-  { id: "morning-blood-sugar", title: "Morning Blood Sugar Check", points: 10, completed: true },
+  { id: "morning-blood-sugar", title: "Morning Blood Sugar Check", points: 10, completed: false },
   { id: "morning-insulin", title: "Take Morning Insulin", points: 10, completed: false },
   { id: "healthy-breakfast", title: "Eat a Healthy Breakfast", points: 5, completed: false },
   { id: "water-intake", title: "Drink 3 Glasses of Water", points: 5, completed: false },
@@ -28,127 +22,45 @@ function getTodayDateString(): string {
 }
 
 /**
- * Check if we need to reset the daily quest (new day)
- */
-function isNewDay(): boolean {
-  if (typeof window === "undefined") return false;
-  
-  const savedDate = localStorage.getItem(STORAGE_KEYS.QUEST_DATE);
-  const today = getTodayDateString();
-  
-  return savedDate !== today;
-}
-
-/**
- * Get user progress from localStorage
+ * Get default user progress
  */
 export function getUserProgress(): UserProgress {
-  if (typeof window === "undefined") {
-    return {
-      level: 1,
-      currentHealth: 0,
-      totalHealth: 10,
-      totalPoints: 0,
-    };
-  }
-
-  const stored = localStorage.getItem(STORAGE_KEYS.USER_PROGRESS);
-  if (!stored) {
-    return {
-      level: 1,
-      currentHealth: 0,
-      totalHealth: 10,
-      totalPoints: 0,
-    };
-  }
-
-  try {
-    return JSON.parse(stored) as UserProgress;
-  } catch {
-    return {
-      level: 1,
-      currentHealth: 0,
-      totalHealth: 10,
-      totalPoints: 0,
-    };
-  }
+  return {
+    level: 1,
+    currentHealth: 0,
+    totalHealth: 10,
+    totalPoints: 0,
+  };
 }
 
 /**
- * Save user progress to localStorage
+ * Save user progress (no-op, storage removed)
  */
-export function saveUserProgress(progress: UserProgress): void {
-  if (typeof window === "undefined") return;
-  
-  localStorage.setItem(STORAGE_KEYS.USER_PROGRESS, JSON.stringify(progress));
+export function saveUserProgress(_progress: UserProgress): void {
+  // No-op: storage removed
 }
 
 /**
- * Get daily quest from localStorage
+ * Get default daily quest
  */
 export function getDailyQuest(): DailyQuest {
-  if (typeof window === "undefined") {
-    return {
-      tasks: DEFAULT_QUEST_TASKS.map((task) => ({ ...task })),
-      date: getTodayDateString(),
-    };
-  }
-
-  // Check if we need to reset for a new day
-  if (isNewDay()) {
-    const newQuest: DailyQuest = {
-      tasks: DEFAULT_QUEST_TASKS.map((task) => ({ ...task })),
-      date: getTodayDateString(),
-    };
-    saveDailyQuest(newQuest);
-    return newQuest;
-  }
-
-  const stored = localStorage.getItem(STORAGE_KEYS.DAILY_QUEST);
-  if (!stored) {
-    const newQuest: DailyQuest = {
-      tasks: DEFAULT_QUEST_TASKS.map((task) => ({ ...task })),
-      date: getTodayDateString(),
-    };
-    saveDailyQuest(newQuest);
-    return newQuest;
-  }
-
-  try {
-    return JSON.parse(stored) as DailyQuest;
-  } catch {
-    const newQuest: DailyQuest = {
-      tasks: DEFAULT_QUEST_TASKS.map((task) => ({ ...task })),
-      date: getTodayDateString(),
-    };
-    saveDailyQuest(newQuest);
-    return newQuest;
-  }
+  return {
+    tasks: DEFAULT_QUEST_TASKS.map((task) => ({ ...task })),
+    date: getTodayDateString(),
+  };
 }
 
 /**
- * Save daily quest to localStorage
+ * Save daily quest (no-op, storage removed)
  */
-export function saveDailyQuest(quest: DailyQuest): void {
-  if (typeof window === "undefined") return;
-  
-  localStorage.setItem(STORAGE_KEYS.DAILY_QUEST, JSON.stringify(quest));
-  localStorage.setItem(STORAGE_KEYS.QUEST_DATE, quest.date);
+export function saveDailyQuest(_quest: DailyQuest): void {
+  // No-op: storage removed
 }
 
 /**
- * Reset daily quest if needed (checks for new day)
+ * Reset daily quest (returns default quest)
  */
 export function resetDailyQuestIfNeeded(): DailyQuest {
-  if (isNewDay()) {
-    const newQuest: DailyQuest = {
-      tasks: DEFAULT_QUEST_TASKS.map((task) => ({ ...task })),
-      date: getTodayDateString(),
-    };
-    saveDailyQuest(newQuest);
-    return newQuest;
-  }
-  
   return getDailyQuest();
 }
 

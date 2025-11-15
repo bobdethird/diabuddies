@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
 import type { HealthTask } from "@/types";
-import { getDailyQuest, saveDailyQuest } from "@/lib/storage";
 import confetti from "canvas-confetti";
 
 interface QuestListProps {
@@ -59,7 +57,7 @@ export function QuestList({ tasks, onTaskToggle }: QuestListProps) {
       points: 10,
       descriptionUncompleted: "Best before 9 AM!",
       descriptionCompleted: "✨ Awesome! You checked before breakfast!",
-      completed: true, // Default completed to show the state
+      completed: false,
     },
     {
       id: "morning-insulin",
@@ -126,32 +124,6 @@ export function QuestList({ tasks, onTaskToggle }: QuestListProps) {
       completed: false,
     },
   ];
-
-  // Initialize tasks in storage if they don't exist
-  useEffect(() => {
-    const dailyQuest = getDailyQuest();
-    const existingTaskIds = dailyQuest.tasks.map((t) => t.id);
-    const missingTasks: HealthTask[] = [];
-
-    questData.forEach((quest) => {
-      if (!existingTaskIds.includes(quest.id)) {
-        missingTasks.push({
-          id: quest.id,
-          title: quest.title,
-          points: quest.points,
-          completed: quest.completed,
-        });
-      }
-    });
-
-    if (missingTasks.length > 0) {
-      const updatedTasks = [...dailyQuest.tasks, ...missingTasks];
-      saveDailyQuest({
-        tasks: updatedTasks,
-        date: dailyQuest.date,
-      });
-    }
-  }, []);
 
   // Merge quest data with actual task state from props
   // First, get tasks that match questData
