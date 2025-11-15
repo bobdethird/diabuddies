@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { HealthTask } from "@/types";
 import confetti from "canvas-confetti";
 
@@ -48,6 +49,9 @@ interface QuestData {
 }
 
 export function QuestList({ tasks, onTaskToggle }: QuestListProps) {
+  // Track which quests should be hidden (after delay)
+  const [hiddenQuestIds, setHiddenQuestIds] = useState<Set<string>>(new Set());
+
   // Define all quest data with both uncompleted and completed descriptions
   const questData: QuestData[] = [
     {
@@ -153,18 +157,24 @@ export function QuestList({ tasks, onTaskToggle }: QuestListProps) {
   }));
 
   // Combine matched and unmatched quests
-  const quests = [...matchedQuests, ...aiQuests];
+  const allQuests = [...matchedQuests, ...aiQuests];
+  
+  // Filter: show incomplete quests, or completed quests that haven't been hidden yet
+  const quests = allQuests.filter((quest) => {
+    if (!quest.completed) return true; // Always show incomplete quests
+    return !hiddenQuestIds.has(quest.id); // Show completed quests until they're hidden
+  });
 
   const handleQuestClick = (questId: string, e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     
-    // Check if quest was completed before toggle
-    const currentQuest = quests.find((q) => q.id === questId);
+    // Check if quest was completed before toggle (check allQuests, not filtered quests)
+    const currentQuest = allQuests.find((q) => q.id === questId);
     const wasCompleted = currentQuest?.completed ?? false;
     
     // Get quest data for points (from either questData or aiQuests)
-    const questInfo = quests.find((q) => q.id === questId);
+    const questInfo = allQuests.find((q) => q.id === questId);
     
     // Toggle the quest
     onTaskToggle(questId);
@@ -181,6 +191,11 @@ export function QuestList({ tasks, onTaskToggle }: QuestListProps) {
       
       // Show floating points animation
       showPointsAnimation(questInfo.points, e);
+      
+      // Hide the quest after 1 second delay
+      setTimeout(() => {
+        setHiddenQuestIds((prev) => new Set(prev).add(questId));
+      }, 1000);
     }
   };
 
@@ -195,30 +210,39 @@ export function QuestList({ tasks, onTaskToggle }: QuestListProps) {
 
         {/* Quest Cards */}
         <div className="space-y-[15px]">
-          {quests.map((quest) => {
-            const isCompleted = quest.completed;
-            
-            return (
-              <div
-                key={quest.id}
-                onClick={(e) => handleQuestClick(quest.id, e)}
-                tabIndex={0}
-                role="button"
-                aria-pressed={isCompleted}
-                className={`
-                  p-5 rounded-[15px] mb-0 min-h-[60px]
-                  cursor-pointer 
-                  transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
-                  focus:outline-none focus:ring-2 focus:ring-[#667eea] focus:ring-offset-2
-                  active:scale-[0.98]
-                  ${
-                    isCompleted
-                      ? "bg-gradient-to-r from-[#f0fdf4] to-white border-l-4 border-l-[#58CC02] shadow-[0_2px_8px_rgba(88,204,2,0.15)] hover:translate-y-[-2px] hover:shadow-[0_4px_12px_rgba(88,204,2,0.2)]"
-                      : "bg-[#F7F7F7] border-2 border-transparent hover:translate-y-[-3px] hover:shadow-[0_6px_20px_rgba(102,126,234,0.3)] hover:border-[#667eea]"
-                  }
-                  sm:p-5 sm:rounded-[15px]
-                `}
-              >
+          {quests.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4">🎉</div>
+              <p className="text-xl font-bold text-gray-600 mb-2">All Done!</p>
+              <p className="text-gray-500">You&apos;ve completed all your health quests today!</p>
+            </div>
+          ) : (
+            quests.map((quest) => {
+              const isCompleted = quest.completed;
+              const isHiding = isCompleted && !hiddenQuestIds.has(quest.id);
+              
+              return (
+                <div
+                  key={quest.id}
+                  onClick={(e) => handleQuestClick(quest.id, e)}
+                  tabIndex={0}
+                  role="button"
+                  aria-pressed={isCompleted}
+                  className={`
+                    p-5 rounded-[15px] mb-0 min-h-[60px]
+                    cursor-pointer 
+                    transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
+                    focus:outline-none focus:ring-2 focus:ring-[#667eea] focus:ring-offset-2
+                    active:scale-[0.98]
+                    ${
+                      isCompleted
+                        ? "bg-gradient-to-r from-[#f0fdf4] to-white border-l-4 border-l-[#58CC02] shadow-[0_2px_8px_rgba(88,204,2,0.15)] opacity-100"
+                        : "bg-[#F7F7F7] border-2 border-transparent hover:translate-y-[-3px] hover:shadow-[0_6px_20px_rgba(102,126,234,0.3)] hover:border-[#667eea]"
+                    }
+                    ${isHiding ? "animate-fade-out" : ""}
+                    sm:p-5 sm:rounded-[15px]
+                  `}
+                >
                 {/* Card Layout - Flex Row */}
                 <div className="flex items-center justify-between gap-3">
                   {/* Left Side: Checkbox + Title */}
@@ -257,43 +281,40 @@ export function QuestList({ tasks, onTaskToggle }: QuestListProps) {
                   </div>
 
                   {/* Right Side: Points Badge */}
-                  <div
-                    className={`
-                      px-[15px] py-[5px] rounded-[20px]
-                      font-bold text-sm flex-shrink-0 text-[#333]
-                      transition-all duration-300 ease-in-out
-                      ${
-                        isCompleted
-                          ? "bg-gradient-to-br from-[#FFD700] to-[#FFA500]"
-                          : "bg-[#FFD700]"
-                      }
-                      sm:text-sm
-                    `}
-                  >
+                  <div className={`
+                    px-[15px] py-[5px] rounded-[20px]
+                    font-bold text-sm flex-shrink-0 text-[#333]
+                    transition-all duration-300 ease-in-out
+                    ${
+                      isCompleted
+                        ? "bg-gradient-to-br from-[#FFD700] to-[#FFA500]"
+                        : "bg-[#FFD700]"
+                    }
+                    sm:text-sm
+                  `}>
                     +{quest.points} pts
                   </div>
                 </div>
 
                 {/* Second Row: Description */}
-                <div
-                  className={`
-                    text-sm mt-2 ml-[37px]
-                    transition-colors duration-300 ease-in-out
-                    ${
-                      isCompleted
-                        ? "text-[#16a34a] font-medium"
-                        : "text-[#666]"
-                    }
-                    sm:text-sm
-                  `}
-                >
+                <div className={`
+                  text-sm mt-2 ml-[37px]
+                  transition-colors duration-300 ease-in-out
+                  ${
+                    isCompleted
+                      ? "text-[#16a34a] font-medium"
+                      : "text-[#666]"
+                  }
+                  sm:text-sm
+                `}>
                   {isCompleted
                     ? quest.descriptionCompleted
                     : quest.descriptionUncompleted}
                 </div>
               </div>
             );
-          })}
+          })
+          )}
         </div>
       </div>
     </div>

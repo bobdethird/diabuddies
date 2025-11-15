@@ -88,30 +88,19 @@ export async function POST(request: Request) {
               },
               {
                 type: "text",
-                text: `Analyze this health report PDF and generate personalized health tasks for diabetes management. 
+                text: `Analyze this health report PDF and create diabetes health tasks.
 
-Based on the report findings, create actionable, specific tasks that address any issues or recommendations found. For example:
-- If hydration levels are low, suggest increasing water intake (e.g., "Drink 4 cups of water instead of 3")
-- If blood sugar levels need attention, suggest specific monitoring tasks
-- If exercise is recommended, create appropriate activity tasks
-- Include any medication or insulin-related tasks if mentioned
+Generate 5-8 simple tasks based on the report. Examples:
+- Low water? "Drink more water"
+- Blood sugar issues? "Check blood sugar before meals"
+- Need exercise? "Play outside for 10 minutes"
 
-Generate 5-8 tasks that are:
-1. Specific and actionable
-2. Appropriate for daily diabetes management
-3. Include point values (5-15 points each, with more important tasks worth more)
-4. Use clear, kid-friendly language
+Also provide 2-3 VERY SHORT tips (one sentence each, max 8 words) for a 6-year-old. Keep it super simple and fun!
 
-Return the tasks as a JSON object with this exact structure:
+Return JSON:
 {
-  "tasks": [
-    {
-      "id": "unique-task-id",
-      "title": "Task title",
-      "points": 10,
-      "completed": false
-    }
-  ]
+  "tasks": [{"id": "task-id", "title": "Task name", "points": 10, "completed": false}],
+  "insights": ["Short tip 1", "Short tip 2"]
 }`,
               },
             ],
@@ -133,7 +122,7 @@ Return the tasks as a JSON object with this exact structure:
     const responseText = messageData.content[0].text;
 
     // Parse the JSON response from Claude
-    let tasks;
+    let tasks, insights;
     try {
       // Extract JSON from markdown code blocks if present
       const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/) || 
@@ -141,6 +130,7 @@ Return the tasks as a JSON object with this exact structure:
       const jsonText = jsonMatch ? jsonMatch[1] : responseText;
       const parsed = JSON.parse(jsonText);
       tasks = parsed.tasks || parsed;
+      insights = parsed.insights || [];
     } catch (parseError) {
       console.error("Failed to parse AI response:", parseError);
       return Response.json(
@@ -165,7 +155,15 @@ Return the tasks as a JSON object with this exact structure:
       completed: task.completed || false,
     }));
 
-    return Response.json({ tasks: validatedTasks });
+    // Validate insights
+    const validatedInsights = Array.isArray(insights) 
+      ? insights.filter((insight: any) => typeof insight === "string" && insight.trim().length > 0)
+      : [];
+
+    return Response.json({ 
+      tasks: validatedTasks,
+      insights: validatedInsights 
+    });
   } catch (error) {
     console.error("Error processing PDF:", error);
     return Response.json(

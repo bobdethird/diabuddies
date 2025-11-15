@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import type { HealthTask } from "@/types";
 
 interface PdfUploadButtonProps {
-  onTasksGenerated: (tasks: HealthTask[]) => void;
+  onTasksGenerated: (tasks: HealthTask[], insights?: string[]) => void;
 }
 
 export function PdfUploadButton({ onTasksGenerated }: PdfUploadButtonProps) {
@@ -50,7 +50,7 @@ export function PdfUploadButton({ onTasksGenerated }: PdfUploadButtonProps) {
       const data = await response.json();
       
       if (data.tasks && Array.isArray(data.tasks)) {
-        onTasksGenerated(data.tasks);
+        onTasksGenerated(data.tasks, data.insights);
       } else {
         throw new Error("Invalid response format");
       }

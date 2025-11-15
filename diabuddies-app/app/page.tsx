@@ -22,6 +22,7 @@ export default function Home() {
     totalPoints: 0,
   }));
   const [quest, setQuest] = useState<HealthTask[]>([]);
+  const [healthInsights, setHealthInsights] = useState<string[]>([]);
 
   // Load data only on client side to avoid hydration mismatch
   useEffect(() => {
@@ -84,9 +85,47 @@ export default function Home() {
     });
   };
 
-  const handleTasksGenerated = (newTasks: HealthTask[]) => {
-    // Replace existing tasks with AI-generated ones
-    setQuest(newTasks);
+  const handleTasksGenerated = (newTasks: HealthTask[], insights?: string[]) => {
+    // Merge new AI-generated tasks with existing tasks
+    // Keep existing default quests and add new AI-generated tasks
+    setQuest((prevTasks) => {
+      // Get IDs of default quests (from questData in QuestList)
+      const defaultQuestIds = [
+        "morning-blood-sugar",
+        "morning-insulin",
+        "healthy-breakfast",
+        "water-intake",
+        "afternoon-blood-sugar",
+        "play-time",
+        "evening-blood-sugar",
+        "bedtime-blood-sugar",
+      ];
+      
+      // Keep existing default quests
+      const existingDefaultQuests = prevTasks.filter((task) =>
+        defaultQuestIds.includes(task.id)
+      );
+      
+      // Remove old AI-generated tasks (those not in defaultQuestIds)
+      // and add new AI-generated tasks
+      const existingNonDefaultTasks = prevTasks.filter(
+        (task) => !defaultQuestIds.includes(task.id)
+      );
+      
+      // Combine: keep default quests + new AI tasks
+      // Remove duplicates by keeping the first occurrence
+      const allTasks = [...existingDefaultQuests, ...newTasks];
+      const uniqueTasks = allTasks.filter(
+        (task, index, self) => index === self.findIndex((t) => t.id === task.id)
+      );
+      
+      return uniqueTasks;
+    });
+    
+    // Store health insights for avatar comments
+    if (insights && insights.length > 0) {
+      setHealthInsights(insights);
+    }
   };
 
   return (
@@ -121,7 +160,7 @@ export default function Home() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
         <div className="flex flex-col gap-6">
-          <HealthHero progress={progress} />
+          <HealthHero progress={progress} healthInsights={healthInsights} />
           <PointsCounter tasks={quest} />
           <QuestList tasks={quest} onTaskToggle={handleTaskToggle} />
         </div>

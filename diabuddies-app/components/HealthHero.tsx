@@ -12,6 +12,7 @@ import type { UserProgress } from "@/types";
 
 interface HealthHeroProps {
   progress: UserProgress;
+  healthInsights?: string[];
 }
 
 /**
@@ -35,7 +36,7 @@ function getNextEvolutionImage(level: number): string {
   return "/second evolution.png";
 }
 
-export function HealthHero({ progress }: HealthHeroProps) {
+export function HealthHero({ progress, healthInsights = [] }: HealthHeroProps) {
   const [mounted, setMounted] = useState(false);
   const [displayProgress, setDisplayProgress] = useState(0);
   const [isLevelingUp, setIsLevelingUp] = useState(false);
@@ -191,37 +192,96 @@ export function HealthHero({ progress }: HealthHeroProps) {
 
         {/* Hero Avatar Section */}
         <div className="relative flex items-center justify-center mb-8">
-          <div className="relative">
+          {/* Hero Image - stays centered */}
+          <div className="relative h-[260px] w-[260px] flex items-center justify-center">
             {/* Glow Halo */}
             <div className="absolute inset-0 bg-gradient-to-r from-orange-300 via-pink-300 to-purple-300 rounded-full blur-2xl opacity-60 animate-pulse-slow -z-10 scale-150" />
-            
-            {/* Hero Image */}
-            <div className="relative h-[260px] w-[260px] flex items-center justify-center">
-              <div className={`relative ${shouldEvolveBounce ? "" : "animate-bounce-slow"}`}>
-                <Image
-                  src={currentImage}
-                  alt="Health Hero"
-                  width={260}
-                  height={260}
-                  className={`drop-shadow-2xl transition-all duration-500 hover:scale-110 ${
-                    shouldEvolveBounce ? "animate-evolve-bounce" : "animate-pulse-gentle"
-                  } ${
-                    isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
-                  }`}
-                  priority
-                />
-                {/* Sparkle effect for higher levels */}
-                {progress.level >= 3 && (
-                  <div className="absolute inset-0 animate-sparkle">
-                    <div className="absolute top-4 left-6 w-2.5 h-2.5 bg-yellow-400 rounded-full opacity-75" />
-                    <div className="absolute top-12 right-8 w-2 h-2 bg-yellow-300 rounded-full opacity-60" />
-                    <div className="absolute bottom-8 left-10 w-2 h-2 bg-yellow-400 rounded-full opacity-70" />
-                    <div className="absolute bottom-12 right-6 w-2.5 h-2.5 bg-yellow-300 rounded-full opacity-65" />
-                  </div>
-                )}
-              </div>
+            <div className={`relative ${shouldEvolveBounce ? "" : "animate-bounce-slow"}`}>
+              <Image
+                src={currentImage}
+                alt="Health Hero"
+                width={260}
+                height={260}
+                className={`drop-shadow-2xl transition-all duration-500 hover:scale-110 ${
+                  shouldEvolveBounce ? "animate-evolve-bounce" : "animate-pulse-gentle"
+                } ${
+                  isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                }`}
+                priority
+              />
+              {/* Sparkle effect for higher levels */}
+              {progress.level >= 3 && (
+                <div className="absolute inset-0 animate-sparkle">
+                  <div className="absolute top-4 left-6 w-2.5 h-2.5 bg-yellow-400 rounded-full opacity-75" />
+                  <div className="absolute top-12 right-8 w-2 h-2 bg-yellow-300 rounded-full opacity-60" />
+                  <div className="absolute bottom-8 left-10 w-2 h-2 bg-yellow-400 rounded-full opacity-70" />
+                  <div className="absolute bottom-12 right-6 w-2.5 h-2.5 bg-yellow-300 rounded-full opacity-65" />
+                </div>
+              )}
             </div>
           </div>
+          
+          {/* Health Insights Speech Bubble - positioned absolutely on the right */}
+          {healthInsights.length > 0 && (
+            <div className="absolute left-[calc(50%+150px)] top-1/2 -translate-y-1/2 z-20 w-[280px] sm:w-[320px] hidden md:block">
+              <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-300 rounded-2xl p-5 shadow-xl animate-fade-in">
+                <div className="flex items-start gap-3">
+                  <div className="text-3xl flex-shrink-0">💬</div>
+                  <div className="flex-1">
+                    <div className="text-base font-bold text-blue-600 mb-3 uppercase tracking-wide">
+                      Health Tips from Your Buddy!
+                    </div>
+                    <div className="space-y-3">
+                      {healthInsights.map((insight, index) => (
+                        <div
+                          key={index}
+                          className="text-lg text-gray-700 leading-relaxed animate-slide-in font-medium"
+                          style={{ animationDelay: `${index * 100}ms` }}
+                        >
+                          <span className="text-blue-500 font-bold text-xl">•</span> {insight}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                {/* Speech bubble tail pointing left */}
+                <div className="absolute top-1/2 -left-3 -translate-y-1/2">
+                  <div className="w-0 h-0 border-t-[12px] border-b-[12px] border-r-[12px] border-t-transparent border-b-transparent border-r-blue-300"></div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Health Insights Speech Bubble - mobile version below avatar */}
+          {healthInsights.length > 0 && (
+            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-4 z-20 w-[90%] max-w-[320px] md:hidden">
+              <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-300 rounded-2xl p-5 shadow-xl animate-fade-in">
+                <div className="flex items-start gap-3">
+                  <div className="text-3xl flex-shrink-0">💬</div>
+                  <div className="flex-1">
+                    <div className="text-base font-bold text-blue-600 mb-3 uppercase tracking-wide">
+                      Health Tips from Your Buddy!
+                    </div>
+                    <div className="space-y-3">
+                      {healthInsights.map((insight, index) => (
+                        <div
+                          key={index}
+                          className="text-lg text-gray-700 leading-relaxed animate-slide-in font-medium"
+                          style={{ animationDelay: `${index * 100}ms` }}
+                        >
+                          <span className="text-blue-500 font-bold text-xl">•</span> {insight}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                {/* Speech bubble tail pointing up */}
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-b-[12px] border-l-transparent border-r-transparent border-b-blue-300"></div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Circular Level Badge */}
