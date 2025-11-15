@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -13,15 +15,17 @@ interface HealthHeroProps {
 }
 
 /**
- * Get hero emoji based on level
- * Hero evolves as level increases
+ * Get hero evolution image based on level
+ * Level 1: First evolution (0-9 points)
+ * Level 2: Second evolution (10-34 points)
+ * Level 3: Third evolution (35-84 points)
+ * Level 4+: Fourth evolution (85+ points)
  */
-function getHeroEmoji(level: number): string {
-  if (level >= 10) return "💎";
-  if (level >= 7) return "🔴";
-  if (level >= 4) return "🟠";
-  if (level >= 2) return "🟡";
-  return "🟢";
+function getHeroEvolution(level: number): string {
+  if (level >= 4) return "/fourth evolution.png";
+  if (level >= 3) return "/third evolution.png";
+  if (level >= 2) return "/second evolution.png";
+  return "/first evolution.png";
 }
 
 export function HealthHero({ progress }: HealthHeroProps) {
@@ -34,7 +38,20 @@ export function HealthHero({ progress }: HealthHeroProps) {
     progress.level
   );
 
-  const heroEmoji = getHeroEmoji(progress.level);
+  const heroImage = getHeroEvolution(progress.level);
+  const [isVisible, setIsVisible] = useState(true);
+  const [currentImage, setCurrentImage] = useState(heroImage);
+
+  // Smooth transition when evolution changes
+  useEffect(() => {
+    if (currentImage !== heroImage) {
+      setIsVisible(false);
+      setTimeout(() => {
+        setCurrentImage(heroImage);
+        setIsVisible(true);
+      }, 300);
+    }
+  }, [heroImage, currentImage]);
 
   return (
     <Card>
@@ -42,8 +59,31 @@ export function HealthHero({ progress }: HealthHeroProps) {
         <CardTitle>Your Health Hero</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col items-center gap-6">
-        {/* Hero Character */}
-        <div className="text-8xl">{heroEmoji}</div>
+        {/* Hero Character with Animation */}
+        <div className="relative h-[200px] w-[200px] flex items-center justify-center">
+          <div className="animate-bounce-slow relative">
+            <Image
+              src={currentImage}
+              alt="Health Hero"
+              width={200}
+              height={200}
+              className={`drop-shadow-2xl transition-all duration-500 hover:scale-110 animate-pulse-gentle ${
+                isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+              }`}
+              priority
+            />
+            {/* Glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-t from-primary/30 via-primary/10 to-transparent rounded-full blur-2xl animate-pulse-slow -z-10" />
+            {/* Sparkle effect for higher levels */}
+            {progress.level >= 3 && (
+              <div className="absolute inset-0 animate-sparkle">
+                <div className="absolute top-2 left-4 w-2 h-2 bg-yellow-400 rounded-full opacity-75" />
+                <div className="absolute top-8 right-6 w-1.5 h-1.5 bg-yellow-300 rounded-full opacity-60" />
+                <div className="absolute bottom-6 left-8 w-1.5 h-1.5 bg-yellow-400 rounded-full opacity-70" />
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* Level Badge */}
         <div className="flex flex-col items-center gap-2">
