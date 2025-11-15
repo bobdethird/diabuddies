@@ -134,14 +134,21 @@ export function HealthHero({ progress }: HealthHeroProps) {
   const nextEvolutionImage = getNextEvolutionImage(progress.level);
   const [isVisible, setIsVisible] = useState(true);
   const [currentImage, setCurrentImage] = useState(heroImage);
+  const [shouldEvolveBounce, setShouldEvolveBounce] = useState(false);
 
-  // Smooth transition when evolution changes
+  // Smooth transition when evolution changes with bounce animation
   useEffect(() => {
     if (currentImage !== heroImage) {
       setIsVisible(false);
       setTimeout(() => {
         setCurrentImage(heroImage);
         setIsVisible(true);
+        // Trigger evolve bounce animation
+        setShouldEvolveBounce(true);
+        // Reset after animation completes
+        setTimeout(() => {
+          setShouldEvolveBounce(false);
+        }, 800);
       }, 300);
     }
   }, [heroImage, currentImage]);
@@ -190,13 +197,15 @@ export function HealthHero({ progress }: HealthHeroProps) {
             
             {/* Hero Image */}
             <div className="relative h-[260px] w-[260px] flex items-center justify-center">
-              <div className="animate-bounce-slow relative">
+              <div className={`relative ${shouldEvolveBounce ? "" : "animate-bounce-slow"}`}>
                 <Image
                   src={currentImage}
                   alt="Health Hero"
                   width={260}
                   height={260}
-                  className={`drop-shadow-2xl transition-all duration-500 hover:scale-110 animate-pulse-gentle ${
+                  className={`drop-shadow-2xl transition-all duration-500 hover:scale-110 ${
+                    shouldEvolveBounce ? "animate-evolve-bounce" : "animate-pulse-gentle"
+                  } ${
                     isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
                   }`}
                   priority
