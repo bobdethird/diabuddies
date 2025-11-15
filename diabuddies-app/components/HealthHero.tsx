@@ -170,27 +170,25 @@ export function HealthHero({ progress, healthInsights = [], detailedInsights = [
 
   return (
     <div className="relative">
-      {/* Hero Card with Glow */}
-      <div className="relative rounded-3xl bg-white p-8 shadow-2xl border-4 border-orange-200 overflow-hidden">
-        {/* Bubble Gradient Background */}
-        <div
-          className={`absolute inset-0 bg-gradient-to-br ${gradientColors} opacity-20 blur-3xl -z-10`}
-        />
+      {/* Hero Card - Chunky Duolingo Style */}
+      <div className="relative rounded-3xl bg-white p-8 border-5 border-[#1CB0F6] shadow-[0_10px_0_0_rgba(0,0,0,0.1)] overflow-hidden">
+        {/* Solid Background Pattern */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 opacity-40" />
         
-        {/* Ambient Particles */}
+        {/* Fun Stars - No blur, solid colors */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <Star className="absolute top-8 left-12 w-3 h-3 text-yellow-400 animate-float opacity-60" />
-          <Sparkles className="absolute top-16 right-16 w-2.5 h-2.5 text-pink-400 animate-float-delayed opacity-50" />
-          <Star className="absolute bottom-20 left-20 w-2 h-2 text-blue-400 animate-float opacity-40" />
-          <Sparkles className="absolute bottom-12 right-12 w-3 h-3 text-purple-400 animate-float-delayed opacity-50" />
+          <Star className="absolute top-8 left-12 w-4 h-4 text-[#FFC800] animate-float fill-[#FFC800]" />
+          <Star className="absolute top-16 right-16 w-3 h-3 text-[#58CC02] animate-float-delayed fill-[#58CC02]" />
+          <Star className="absolute bottom-20 left-20 w-3 h-3 text-[#1CB0F6] animate-float fill-[#1CB0F6]" />
+          <Star className="absolute bottom-12 right-12 w-4 h-4 text-[#CE82FF] animate-float-delayed fill-[#CE82FF]" />
         </div>
 
-        {/* "Your Health Hero" Badge */}
+        {/* "Your Health Hero" Badge - Comic Style */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-400 to-pink-400 text-white px-6 py-2 rounded-full shadow-lg mb-4">
-            <Sparkles className="w-4 h-4" />
-            <span className="font-bold text-lg">Your Health Hero</span>
-            <Sparkles className="w-4 h-4" />
+          <div className="inline-flex items-center gap-2 bg-[#58CC02] text-white px-6 py-3 rounded-2xl shadow-[0_5px_0_0_#46A302] border-3 border-[#46A302] mb-4">
+            <Star className="w-5 h-5 fill-white" />
+            <span className="font-black text-xl tracking-wide">YOUR HEALTH HERO</span>
+            <Star className="w-5 h-5 fill-white" />
           </div>
         </div>
 
@@ -198,8 +196,8 @@ export function HealthHero({ progress, healthInsights = [], detailedInsights = [
         <div className="relative flex items-center justify-center mb-8">
           {/* Hero Image - stays centered */}
           <div className="relative h-[260px] w-[260px] flex items-center justify-center">
-            {/* Glow Halo */}
-            <div className="absolute inset-0 bg-gradient-to-r from-orange-300 via-pink-300 to-purple-300 rounded-full blur-2xl opacity-60 animate-pulse-slow -z-10 scale-150" />
+            {/* Solid Circle Background - No blur */}
+            <div className="absolute inset-0 bg-[#FFC800] rounded-full opacity-30 -z-10 scale-110 border-4 border-[#E6B400]" />
             <div className={`relative ${shouldEvolveBounce ? "" : "animate-bounce-slow"}`}>
               <Image
                 src={currentImage}
@@ -225,24 +223,24 @@ export function HealthHero({ progress, healthInsights = [], detailedInsights = [
             </div>
           </div>
           
-          {/* Health Insights Speech Bubble - positioned absolutely on the right */}
+          {/* Health Insights Speech Bubble - Comic Style positioned on the right */}
           {healthInsights.length > 0 && (
             <div className="absolute left-[calc(50%+150px)] top-1/2 -translate-y-1/2 z-20 w-[280px] sm:w-[320px] hidden md:block">
-              <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-300 rounded-2xl p-5 shadow-xl animate-fade-in">
+              <div className="bg-white border-4 border-[#1CB0F6] rounded-2xl p-5 shadow-[0_6px_0_0_rgba(28,176,246,0.3)] animate-fade-in">
                 <div className="flex items-start gap-3">
                   <div className="text-3xl flex-shrink-0">💬</div>
                   <div className="flex-1">
-                    <div className="text-base font-bold text-blue-600 mb-3 uppercase tracking-wide">
-                      Health Tips from Your Buddy!
+                    <div className="text-sm font-black text-[#1CB0F6] mb-3 uppercase tracking-wider">
+                      HEALTH TIPS FROM YOUR BUDDY!
                     </div>
                     <div className="space-y-3">
                       {healthInsights.map((insight, index) => (
                         <div
                           key={index}
-                          className="text-lg text-gray-700 leading-relaxed animate-slide-in font-medium"
+                          className="text-base text-[#3C3C3C] leading-relaxed animate-slide-in font-bold"
                           style={{ animationDelay: `${index * 100}ms` }}
                         >
-                          <span className="text-blue-500 font-bold text-xl">•</span> {insight}
+                          <span className="text-[#58CC02] font-black text-xl">•</span> {insight}
                         </div>
                       ))}
                     </div>
@@ -251,7 +249,9 @@ export function HealthHero({ progress, healthInsights = [], detailedInsights = [
                       <div className="mt-4">
                         <Button
                           onClick={() => setShowDetailedTips(true)}
-                          className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold text-sm py-2 rounded-lg shadow-md transition-all hover:scale-105"
+                          variant="duoBlue"
+                          size="sm"
+                          className="w-full text-sm"
                         >
                           Learn More 📚
                         </Button>
@@ -259,9 +259,9 @@ export function HealthHero({ progress, healthInsights = [], detailedInsights = [
                     )}
                   </div>
                 </div>
-                {/* Speech bubble tail pointing left */}
-                <div className="absolute top-1/2 -left-3 -translate-y-1/2">
-                  <div className="w-0 h-0 border-t-[12px] border-b-[12px] border-r-[12px] border-t-transparent border-b-transparent border-r-blue-300"></div>
+                {/* Speech bubble tail pointing left - chunky */}
+                <div className="absolute top-1/2 -left-4 -translate-y-1/2">
+                  <div className="w-0 h-0 border-t-[16px] border-b-[16px] border-r-[16px] border-t-transparent border-b-transparent border-r-[#1CB0F6]"></div>
                 </div>
               </div>
             </div>
@@ -270,21 +270,21 @@ export function HealthHero({ progress, healthInsights = [], detailedInsights = [
           {/* Health Insights Speech Bubble - mobile version below avatar */}
           {healthInsights.length > 0 && (
             <div className="absolute left-1/2 -translate-x-1/2 top-full mt-4 z-20 w-[90%] max-w-[320px] md:hidden">
-              <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-300 rounded-2xl p-5 shadow-xl animate-fade-in">
+              <div className="bg-white border-4 border-[#1CB0F6] rounded-2xl p-5 shadow-[0_6px_0_0_rgba(28,176,246,0.3)] animate-fade-in">
                 <div className="flex items-start gap-3">
                   <div className="text-3xl flex-shrink-0">💬</div>
                   <div className="flex-1">
-                    <div className="text-base font-bold text-blue-600 mb-3 uppercase tracking-wide">
-                      Health Tips from Your Buddy!
+                    <div className="text-sm font-black text-[#1CB0F6] mb-3 uppercase tracking-wider">
+                      HEALTH TIPS FROM YOUR BUDDY!
                     </div>
                     <div className="space-y-3">
                       {healthInsights.map((insight, index) => (
                         <div
                           key={index}
-                          className="text-lg text-gray-700 leading-relaxed animate-slide-in font-medium"
+                          className="text-base text-[#3C3C3C] leading-relaxed animate-slide-in font-bold"
                           style={{ animationDelay: `${index * 100}ms` }}
                         >
-                          <span className="text-blue-500 font-bold text-xl">•</span> {insight}
+                          <span className="text-[#58CC02] font-black text-xl">•</span> {insight}
                         </div>
                       ))}
                     </div>
@@ -293,7 +293,9 @@ export function HealthHero({ progress, healthInsights = [], detailedInsights = [
                       <div className="mt-4">
                         <Button
                           onClick={() => setShowDetailedTips(true)}
-                          className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold text-sm py-2 rounded-lg shadow-md transition-all hover:scale-105"
+                          variant="duoBlue"
+                          size="sm"
+                          className="w-full text-sm"
                         >
                           Learn More 📚
                         </Button>
@@ -301,9 +303,9 @@ export function HealthHero({ progress, healthInsights = [], detailedInsights = [
                     )}
                   </div>
                 </div>
-                {/* Speech bubble tail pointing up */}
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-b-[12px] border-l-transparent border-r-transparent border-b-blue-300"></div>
+                {/* Speech bubble tail pointing up - chunky */}
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                  <div className="w-0 h-0 border-l-[16px] border-r-[16px] border-b-[16px] border-l-transparent border-r-transparent border-b-[#1CB0F6]"></div>
                 </div>
               </div>
             </div>
@@ -317,78 +319,78 @@ export function HealthHero({ progress, healthInsights = [], detailedInsights = [
           onClose={() => setShowDetailedTips(false)}
         />
 
-        {/* Circular Level Badge */}
+        {/* Circular Level Badge - Chunky Style */}
         <div className="flex flex-col items-center gap-4 mb-6">
           <div className="relative">
-            <div className={`absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full blur-lg opacity-50 animate-pulse-slow transition-all duration-300 ${
-              showPowerUp ? "scale-150 opacity-75" : ""
-            }`} />
-            <div className={`relative bg-gradient-to-br from-blue-500 to-purple-600 rounded-full w-24 h-24 flex items-center justify-center shadow-xl border-4 border-white transition-all duration-300 ${
-              showPowerUp ? "scale-110 border-yellow-400 shadow-2xl shadow-yellow-400/50" : ""
+            {/* Level Up Animation Overlay */}
+            {showPowerUp && (
+              <div className="absolute inset-0 -m-8 flex items-center justify-center pointer-events-none z-10">
+                <div className="text-6xl font-black text-[#FFC800] comic-text animate-pop-in" style={{ textShadow: '4px 4px 0px #3C3C3C, -2px -2px 0px white' }}>
+                  LEVEL UP!
+                </div>
+              </div>
+            )}
+            <div className={`relative bg-[#1CB0F6] rounded-full w-28 h-28 flex items-center justify-center border-6 border-[#1899D6] shadow-[0_8px_0_0_#1899D6] transition-all duration-300 ${
+              showPowerUp ? "scale-110 shadow-[0_12px_0_0_#1899D6] -translate-y-1" : ""
             }`}>
               <div className="text-center">
-                <div className="text-xs text-white/80 font-semibold uppercase tracking-wide">
-                  Level
+                <div className="text-xs text-white font-black uppercase tracking-wider">
+                  LEVEL
                 </div>
-                <div className={`text-4xl font-bold text-white drop-shadow-lg transition-all duration-300 ${
-                  showPowerUp ? "scale-125 text-yellow-300" : ""
+                <div className={`text-5xl font-black text-white transition-all duration-300 ${
+                  showPowerUp ? "scale-125" : ""
                 }`}>
                   {progress.level}
                 </div>
               </div>
             </div>
-            {/* Power-up particles around badge */}
+            {/* Power-up stars around badge */}
             {showPowerUp && (
               <>
-                <Sparkles className="absolute -top-2 -left-2 w-6 h-6 text-yellow-400 animate-bounce" />
-                <Star className="absolute -top-2 -right-2 w-5 h-5 text-yellow-300 animate-bounce delay-100" />
-                <Sparkles className="absolute -bottom-2 -left-2 w-5 h-5 text-yellow-400 animate-bounce delay-200" />
-                <Star className="absolute -bottom-2 -right-2 w-6 h-6 text-yellow-300 animate-bounce delay-300" />
+                <Star className="absolute -top-2 -left-2 w-8 h-8 text-[#FFC800] fill-[#FFC800] animate-star-burst" />
+                <Star className="absolute -top-2 -right-2 w-7 h-7 text-[#FFC800] fill-[#FFC800] animate-star-burst delay-100" />
+                <Star className="absolute -bottom-2 -left-2 w-7 h-7 text-[#FFC800] fill-[#FFC800] animate-star-burst delay-200" />
+                <Star className="absolute -bottom-2 -right-2 w-8 h-8 text-[#FFC800] fill-[#FFC800] animate-star-burst delay-300" />
               </>
             )}
           </div>
         </div>
 
-        {/* Pill-Shaped Progress Bar */}
+        {/* Chunky Progress Bar - Duolingo Style */}
         <div className="space-y-3 mb-6">
-          <div className="flex justify-between items-center text-sm">
-            <span className="font-semibold text-gray-700">Progress to Next Level</span>
-            <span className={`font-bold text-lg transition-colors duration-300 ${
-              showPowerUp ? "text-yellow-500 scale-110" : "text-orange-600"
+          <div className="flex justify-between items-center">
+            <span className="font-bold text-base text-[#3C3C3C]">Progress to Next Level</span>
+            <span className={`font-black text-xl transition-colors duration-300 ${
+              showPowerUp ? "text-[#FFC800] scale-110 comic-text" : "text-[#58CC02]"
             }`}>
               {showPowerUp ? "LEVEL UP! 🎉" : `${Math.round(progressPercent)}%`}
             </span>
           </div>
           
-          {/* Custom Pill Progress Bar */}
-          <div className="relative h-8 bg-gray-200 rounded-full overflow-hidden shadow-inner border-2 border-gray-300">
+          {/* Chunky Progress Bar with thick borders */}
+          <div className="relative h-10 bg-gray-200 rounded-full overflow-hidden border-4 border-gray-300 shadow-[0_4px_0_0_rgba(0,0,0,0.1)]">
             <div
-              className={`h-full bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 rounded-full shadow-lg transition-all ease-out ${
+              className={`h-full bg-[#58CC02] rounded-full transition-all ease-out ${
                 isLevelingUp ? "duration-[600ms]" : "duration-500"
               } ${
-                showPowerUp ? "animate-pulse brightness-125" : ""
+                showPowerUp ? "bg-[#FFC800]" : ""
               }`}
               style={{ width: `${Math.max(0, Math.min(100, progressPercent))}%` }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse-slow" />
               {showPowerUp && (
-                <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-white to-yellow-300 animate-shimmer opacity-75" />
+                <div className="absolute inset-0 animate-pulse" />
               )}
             </div>
-            {/* Progress indicator dot */}
+            {/* Progress indicator circle */}
             {progressPercent > 0 && (
               <div
-                className={`absolute top-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full border-2 border-orange-500 shadow-lg transition-all ease-out ${
+                className={`absolute top-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full border-4 border-[#58CC02] shadow-md transition-all ease-out ${
                   isLevelingUp ? "duration-[600ms]" : "duration-500"
                 } ${
-                  showPowerUp ? "border-yellow-400 scale-125 animate-pulse" : ""
+                  showPowerUp ? "border-[#FFC800] scale-125" : ""
                 }`}
-                style={{ left: `calc(${Math.max(0, Math.min(100, progressPercent))}% - 12px)` }}
+                style={{ left: `calc(${Math.max(0, Math.min(100, progressPercent))}% - 16px)` }}
               />
-            )}
-            {/* Power-up glow effect */}
-            {showPowerUp && (
-              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-white to-yellow-400 rounded-full opacity-50 animate-pulse blur-sm" />
             )}
           </div>
           
@@ -422,12 +424,12 @@ export function HealthHero({ progress, healthInsights = [], detailedInsights = [
           )}
         </div>
 
-        {/* Total Points Display */}
-        <div className="text-center bg-gradient-to-r from-orange-100 to-pink-100 rounded-2xl p-4 border-2 border-orange-200">
-          <div className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">
-            Total Points
+        {/* Total Points Display - Chunky Style */}
+        <div className="text-center bg-[#FFC800] rounded-2xl p-5 border-5 border-[#E6B400] shadow-[0_8px_0_0_#E6B400]">
+          <div className="text-xs font-black text-[#3C3C3C] uppercase tracking-wider mb-2">
+            TOTAL POINTS
           </div>
-          <div className="text-3xl font-bold gradient-text-orange">
+          <div className="text-4xl font-black text-[#3C3C3C]">
             {progress.totalPoints}
           </div>
         </div>

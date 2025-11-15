@@ -55,26 +55,26 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 flex items-center justify-center p-4">
-      {/* Background pattern */}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
+      {/* Background stars - solid colors */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-20 w-3 h-3 bg-orange-300 rounded-full animate-float opacity-60" />
-        <div className="absolute top-40 right-32 w-2 h-2 bg-pink-300 rounded-full animate-float-delayed opacity-50" />
-        <div className="absolute bottom-32 left-1/4 w-2.5 h-2.5 bg-yellow-300 rounded-full animate-float opacity-40" />
-        <div className="absolute bottom-20 right-1/3 w-3 h-3 bg-purple-300 rounded-full animate-float-delayed opacity-50" />
+        <Star className="absolute top-20 left-20 w-8 h-8 text-[#58CC02] fill-[#58CC02] animate-float opacity-60" />
+        <Star className="absolute top-40 right-32 w-6 h-6 text-[#1CB0F6] fill-[#1CB0F6] animate-float-delayed opacity-50" />
+        <Star className="absolute bottom-32 left-1/4 w-7 h-7 text-[#FFC800] fill-[#FFC800] animate-float opacity-40" />
+        <Star className="absolute bottom-20 right-1/3 w-8 h-8 text-[#CE82FF] fill-[#CE82FF] animate-float-delayed opacity-50" />
       </div>
 
-      <Card className="w-full max-w-md relative z-10 shadow-2xl border-4 border-orange-200">
+      <Card className="w-full max-w-md relative z-10 shadow-[0_12px_0_0_rgba(0,0,0,0.15)] border-6 border-[#1CB0F6]">
         <CardHeader className="text-center pb-4">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Sparkles className="w-6 h-6 text-orange-500 animate-pulse-gentle" />
-            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
-              Dia<span className="text-orange-500">Buddies</span>
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Sparkles className="w-8 h-8 text-[#FFC800] fill-[#FFC800]" />
+            <CardTitle className="text-4xl font-black text-[#58CC02] comic-text">
+              DIABUDDIES
             </CardTitle>
-            <Star className="w-5 h-5 text-yellow-500 animate-sparkle" />
+            <Star className="w-8 h-8 text-[#FFC800] fill-[#FFC800]" />
           </div>
-          <CardDescription className="text-base">
-            Sign in to continue your health adventure!
+          <CardDescription className="text-lg font-bold text-[#3C3C3C]">
+            SIGN IN TO CONTINUE YOUR HEALTH ADVENTURE!
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -104,15 +104,17 @@ export default function SignInPage() {
               />
             </div>
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+              <div className="bg-[#FF4B4B] border-4 border-[#D93A3A] text-white px-4 py-3 rounded-2xl text-sm font-bold shadow-[0_4px_0_0_#D93A3A]">
                 {error}
               </div>
             )}
             <Button
               type="submit"
-              className="w-full h-11 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 hover:from-orange-600 hover:via-pink-600 hover:to-purple-600 text-white font-bold text-base shadow-lg"
+              variant="duoGreen"
+              size="lg"
+              className="w-full text-lg"
             >
-              Sign In ✨
+              SIGN IN ⚡
             </Button>
           </form>
         </CardContent>

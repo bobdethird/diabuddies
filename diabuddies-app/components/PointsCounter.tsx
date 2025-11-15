@@ -23,14 +23,14 @@ export function PointsCounter({ tasks }: PointsCounterProps) {
   const totalPoints = calculatePoints();
 
   return (
-    <div className="bg-white rounded-xl p-4 mb-4 shadow-md border-2 border-[#FFD700]/20">
+    <div className="bg-[#FFC800] rounded-3xl p-6 mb-6 border-5 border-[#E6B400] shadow-[0_8px_0_0_#E6B400]">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl">⭐</span>
-          <span className="font-bold text-gray-700">Points Today:</span>
+        <div className="flex items-center gap-3">
+          <span className="text-4xl">⭐</span>
+          <span className="font-black text-xl text-[#3C3C3C]">POINTS TODAY:</span>
         </div>
-        <div className="text-3xl font-bold text-yellow-500">
-          {mounted ? totalPoints : 0} pts
+        <div className="text-4xl font-black text-[#3C3C3C]">
+          {mounted ? totalPoints : 0}
         </div>
       </div>
     </div>

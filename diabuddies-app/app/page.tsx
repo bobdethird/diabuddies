@@ -156,27 +156,27 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50">
-      {/* Playful Header */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 py-8 px-6 shadow-lg">
-        {/* Background pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-4 left-10 w-3 h-3 bg-white rounded-full animate-float" />
-          <div className="absolute top-12 right-20 w-2 h-2 bg-white rounded-full animate-float-delayed" />
-          <div className="absolute bottom-8 left-1/4 w-2.5 h-2.5 bg-white rounded-full animate-float" />
-          <div className="absolute bottom-4 right-1/3 w-3 h-3 bg-white rounded-full animate-float-delayed" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      {/* Chunky Hero Header - Duolingo + Marvel Style */}
+      <div className="relative overflow-hidden bg-[#60A5FA] py-10 px-6 border-b-8 border-[#3B82F6]">
+        {/* Fun stars - solid colors, no blur */}
+        <div className="absolute inset-0 opacity-20">
+          <Star className="absolute top-6 left-12 w-8 h-8 text-white fill-white animate-float" />
+          <Star className="absolute top-16 right-24 w-6 h-6 text-white fill-white animate-float-delayed" />
+          <Star className="absolute bottom-10 left-1/4 w-7 h-7 text-white fill-white animate-float" />
+          <Star className="absolute bottom-6 right-1/3 w-8 h-8 text-white fill-white animate-float-delayed" />
         </div>
         
         <div className="container mx-auto relative z-10">
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <Sparkles className="w-8 h-8 text-yellow-300 animate-pulse-gentle" />
-            <h1 className="text-5xl md:text-6xl font-bold text-white drop-shadow-lg">
-              Dia<span className="text-yellow-300">Buddies</span>
+          <div className="flex items-center justify-center gap-4 mb-3">
+            <Sparkles className="w-10 h-10 text-[#FFC800] fill-[#FFC800]" />
+            <h1 className="text-6xl md:text-7xl font-black text-white comic-text">
+              DIA<span className="text-[#FFC800]">BUDDIES</span>
             </h1>
-            <Star className="w-7 h-7 text-yellow-300 animate-sparkle" />
+            <Star className="w-10 h-10 text-[#FFC800] fill-[#FFC800]" />
           </div>
-          <p className="text-center text-xl md:text-2xl text-white/90 font-semibold drop-shadow-md mb-4">
-            {userName ? `Welcome back, ${userName}! ✨` : "Your Health Adventure Starts Today! ✨"}
+          <p className="text-center text-2xl md:text-3xl text-white font-black mb-6">
+            {userName ? `WELCOME BACK, ${userName.toUpperCase()}! ⚡` : "YOUR HEALTH ADVENTURE STARTS TODAY! ⚡"}
           </p>
           <div className="flex justify-center">
             <PdfUploadButton onTasksGenerated={handleTasksGenerated} />

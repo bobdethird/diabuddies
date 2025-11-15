@@ -201,11 +201,12 @@ export function QuestList({ tasks, onTaskToggle }: QuestListProps) {
 
   return (
     <div className="w-full">
-      {/* Container Section */}
-      <div className="bg-white rounded-[20px] p-[30px] shadow-[0_4px_6px_rgba(0,0,0,0.1)] mb-5">
+      {/* Container Section - Chunky Duolingo Style */}
+      <div className="bg-white rounded-3xl p-8 border-5 border-[#58CC02] shadow-[0_10px_0_0_rgba(70,163,2,0.2)] mb-5">
         {/* Section Title */}
-        <h2 className="text-2xl font-bold text-[#333333] mb-5">
-          📋 Today&apos;s Health Quests
+        <h2 className="text-3xl font-black text-[#3C3C3C] mb-6 flex items-center gap-3">
+          <span className="text-4xl">📋</span>
+          TODAY&apos;S HEALTH QUESTS
         </h2>
 
         {/* Quest Cards */}
@@ -229,38 +230,38 @@ export function QuestList({ tasks, onTaskToggle }: QuestListProps) {
                   role="button"
                   aria-pressed={isCompleted}
                   className={`
-                    p-5 rounded-[15px] mb-0 min-h-[60px]
+                    p-6 rounded-2xl mb-0 min-h-[70px]
                     cursor-pointer 
-                    transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
-                    focus:outline-none focus:ring-2 focus:ring-[#667eea] focus:ring-offset-2
-                    active:scale-[0.98]
+                    transition-all duration-200 ease-out
+                    focus:outline-none focus:ring-4 focus:ring-[#1CB0F6] focus:ring-offset-2
+                    active:translate-y-[2px]
                     ${
                       isCompleted
-                        ? "bg-gradient-to-r from-[#f0fdf4] to-white border-l-4 border-l-[#58CC02] shadow-[0_2px_8px_rgba(88,204,2,0.15)] opacity-100"
-                        : "bg-[#F7F7F7] border-2 border-transparent hover:translate-y-[-3px] hover:shadow-[0_6px_20px_rgba(102,126,234,0.3)] hover:border-[#667eea]"
+                        ? "bg-[#E8F5E9] border-4 border-[#58CC02] shadow-[0_6px_0_0_rgba(70,163,2,0.3)] opacity-100"
+                        : "bg-white border-4 border-[#E5E5E5] hover:-translate-y-[2px] hover:shadow-[0_8px_0_0_rgba(28,176,246,0.2)] hover:border-[#1CB0F6]"
                     }
                     ${isHiding ? "animate-fade-out" : ""}
-                    sm:p-5 sm:rounded-[15px]
+                    sm:p-6 sm:rounded-2xl
                   `}
                 >
                 {/* Card Layout - Flex Row */}
                 <div className="flex items-center justify-between gap-3">
                   {/* Left Side: Checkbox + Title */}
                   <div className="flex items-center gap-3 flex-1 min-w-0">
-                    {/* Custom Checkbox */}
+                    {/* Chunky Custom Checkbox */}
                     <div
                       className={`
-                        w-[25px] h-[25px] rounded-[5px] flex items-center justify-center
-                        flex-shrink-0 transition-all duration-200 ease-in-out border-[3px]
+                        w-[32px] h-[32px] rounded-lg flex items-center justify-center
+                        flex-shrink-0 transition-all duration-200 ease-out border-4
                         ${
                           isCompleted
-                            ? "bg-[#58CC02] border-[#58CC02]"
-                            : "bg-white border-[#667eea]"
+                            ? "bg-[#58CC02] border-[#46A302] shadow-[0_3px_0_0_#46A302]"
+                            : "bg-white border-[#E5E5E5] shadow-[0_3px_0_0_rgba(0,0,0,0.1)]"
                         }
                       `}
                     >
                       {isCompleted && (
-                        <span className="text-white text-[18px] font-bold leading-none">
+                        <span className="text-white text-[22px] font-black leading-none">
                           ✓
                         </span>
                       )}
@@ -268,42 +269,43 @@ export function QuestList({ tasks, onTaskToggle }: QuestListProps) {
 
                     {/* Title + Emoji */}
                     <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <span className="text-lg font-bold text-[#333] sm:text-lg">
+                      <span className="text-lg font-extrabold text-[#3C3C3C] sm:text-lg">
                         {quest.title}
                       </span>
-                      <span className="text-lg flex-shrink-0">{quest.emoji}</span>
+                      <span className="text-xl flex-shrink-0">{quest.emoji}</span>
                       {quest.isNew && (
-                        <span className="bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full flex-shrink-0">
+                        <span className="bg-[#FF4B4B] text-white text-xs font-black px-3 py-1 rounded-full flex-shrink-0 shadow-[0_2px_0_0_#D93A3A]">
                           NEW
                         </span>
                       )}
                     </div>
                   </div>
 
-                  {/* Right Side: Points Badge */}
+                  {/* Right Side: Chunky Points Badge */}
                   <div className={`
-                    px-[15px] py-[5px] rounded-[20px]
-                    font-bold text-sm flex-shrink-0 text-[#333]
-                    transition-all duration-300 ease-in-out
+                    px-5 py-2 rounded-2xl
+                    font-black text-base flex-shrink-0 text-[#3C3C3C]
+                    transition-all duration-200 ease-out
+                    border-3 border-[#E6B400] shadow-[0_4px_0_0_#E6B400]
                     ${
                       isCompleted
-                        ? "bg-gradient-to-br from-[#FFD700] to-[#FFA500]"
-                        : "bg-[#FFD700]"
+                        ? "bg-[#FFC800]"
+                        : "bg-[#FFC800]"
                     }
-                    sm:text-sm
+                    sm:text-base
                   `}>
-                    +{quest.points} pts
+                    +{quest.points}
                   </div>
                 </div>
 
                 {/* Second Row: Description */}
                 <div className={`
-                  text-sm mt-2 ml-[37px]
-                  transition-colors duration-300 ease-in-out
+                  text-sm mt-2 ml-[44px]
+                  transition-colors duration-200 ease-out
                   ${
                     isCompleted
-                      ? "text-[#16a34a] font-medium"
-                      : "text-[#666]"
+                      ? "text-[#46A302] font-bold"
+                      : "text-[#666] font-semibold"
                   }
                   sm:text-sm
                 `}>

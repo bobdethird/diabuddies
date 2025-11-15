@@ -119,18 +119,31 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-nunito), system-ui, sans-serif;
+    font-weight: 600;
   }
   
-  /* Playful color variables */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 800;
+  }
+  
+  /* Duolingo + Marvel Superhero Color Palette */
   :root {
+    --color-duo-green: #58CC02;
+    --color-duo-green-dark: #46A302;
+    --color-duo-blue: #1CB0F6;
+    --color-duo-blue-dark: #1899D6;
+    --color-superhero-red: #FF4B4B;
+    --color-superhero-red-dark: #D93A3A;
+    --color-golden-yellow: #FFC800;
+    --color-golden-yellow-dark: #E6B400;
+    --color-action-purple: #CE82FF;
+    --color-action-purple-dark: #B569E6;
+    --color-border-gray: #E5E5E5;
+    --color-text-dark: #3C3C3C;
+    
+    /* Keep some existing colors for avatar transitions */
     --color-playful-orange: #ff8c42;
-    --color-playful-peach: #ffb88c;
-    --color-playful-blue: #4fc3f7;
-    --color-playful-aqua: #80deea;
-    --color-playful-purple: #ba68c8;
     --color-playful-pink: #f48fb1;
-    --color-playful-yellow: #ffd54f;
-    --color-playful-green: #81c784;
   }
 }
 
@@ -394,5 +407,85 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+  
+  /* Comic Book Text Effect */
+  .comic-text {
+    font-weight: 900;
+    text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.05em;
+  }
+  
+  /* 3D Button Effect - Chunky Duolingo Style */
+  .btn-3d {
+    box-shadow: 0 6px 0 0 var(--shadow-color, #46A302);
+    transition: all 0.1s ease;
+    position: relative;
+    top: 0;
+  }
+  
+  .btn-3d:hover {
+    box-shadow: 0 8px 0 0 var(--shadow-color, #46A302);
+    top: -2px;
+  }
+  
+  .btn-3d:active {
+    box-shadow: 0 2px 0 0 var(--shadow-color, #46A302);
+    top: 4px;
+  }
+  
+  /* Thick Border Card */
+  .card-chunky {
+    border: 5px solid var(--border-color, #E5E5E5);
+    box-shadow: 0 8px 0 0 rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Star Burst Animation for celebrations */
+  @keyframes star-burst {
+    0% {
+      transform: scale(0) rotate(0deg);
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.5) rotate(180deg);
+      opacity: 0;
+    }
+  }
+  
+  .animate-star-burst {
+    animation: star-burst 0.6s ease-out;
+  }
+  
+  /* Pop animation for comic effects */
+  @keyframes pop-in {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  .animate-pop-in {
+    animation: pop-in 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+  
+  /* Shake animation for attention */
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+  }
+  
+  .animate-shake {
+    animation: shake 0.5s ease-in-out;
   }
 }

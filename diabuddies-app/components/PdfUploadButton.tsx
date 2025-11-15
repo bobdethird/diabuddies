@@ -82,23 +82,24 @@ export function PdfUploadButton({ onTasksGenerated }: PdfUploadButtonProps) {
       <Button
         onClick={handleButtonClick}
         disabled={isUploading}
-        variant="outline"
-        className="bg-white/90 hover:bg-white text-gray-800 border-2 border-white/50 shadow-lg hover:shadow-xl transition-all"
+        variant="duoBlue"
+        size="lg"
+        className="text-lg font-black"
       >
         {isUploading ? (
           <>
-            <Loader2 className="w-4 h-4 animate-spin" />
-            Processing...
+            <Loader2 className="w-5 h-5 animate-spin" />
+            PROCESSING...
           </>
         ) : (
           <>
-            <Upload className="w-4 h-4" />
-            Upload Health Report
+            <Upload className="w-5 h-5" />
+            UPLOAD HEALTH REPORT 📄
           </>
         )}
       </Button>
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 px-3 py-1 rounded">
+        <p className="text-sm font-bold text-white bg-[#FF4B4B] border-4 border-[#D93A3A] px-4 py-2 rounded-2xl shadow-[0_4px_0_0_#D93A3A]">
           {error}
         </p>
       )}
