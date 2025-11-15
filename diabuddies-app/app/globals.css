@@ -256,6 +256,33 @@
     animation: bounce-hover 0.6s ease-in-out;
   }
   
+  /* Shimmer animation for power-up effect */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  
+  .animate-shimmer {
+    animation: shimmer 1s ease-in-out infinite;
+  }
+  
+  /* Delay utilities for staggered animations */
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+  
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+  
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+  
   /* Gradient text */
   .gradient-text-orange {
     background: linear-gradient(135deg, #ff8c42 0%, #ffb88c 100%);

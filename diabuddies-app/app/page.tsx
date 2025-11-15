@@ -29,8 +29,21 @@ export default function Home() {
   useEffect(() => {
     setMounted(true);
     const initialProgress = getUserProgress();
-    const updatedQuest = resetDailyQuestIfNeeded();
-    setProgress(initialProgress);
+    const updatedQuest = resetDailyQuestIfNeeded();    
+    // Ensure level is calculated correctly based on totalPoints
+    const correctLevel = calculateLevel(initialProgress.totalPoints);
+    
+    const syncedProgress: UserProgress = {
+      ...initialProgress,
+      level: correctLevel,
+    };
+    
+    // Update if level was incorrect
+    if (syncedProgress.level !== initialProgress.level) {
+      saveUserProgress(syncedProgress);
+    }
+    
+    setProgress(syncedProgress);
     setQuest(updatedQuest.tasks);
   }, []);
 
