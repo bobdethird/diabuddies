@@ -5,6 +5,7 @@ import { Sparkles, Star } from "lucide-react";
 import { HealthHero } from "@/components/HealthHero";
 import { QuestList } from "@/components/QuestList";
 import { PointsCounter } from "@/components/PointsCounter";
+import { PdfUploadButton } from "@/components/PdfUploadButton";
 import {
   getUserProgress,
   saveUserProgress,
@@ -82,6 +83,18 @@ export default function Home() {
     });
   };
 
+  const handleTasksGenerated = (newTasks: HealthTask[]) => {
+    // Replace existing tasks with AI-generated ones
+    setQuest(newTasks);
+    
+    // Save to localStorage
+    const updatedQuest = {
+      tasks: newTasks,
+      date: new Date().toISOString().split("T")[0],
+    };
+    saveDailyQuest(updatedQuest);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50">
       {/* Playful Header */}
@@ -102,9 +115,12 @@ export default function Home() {
             </h1>
             <Star className="w-7 h-7 text-yellow-300 animate-sparkle" />
           </div>
-          <p className="text-center text-xl md:text-2xl text-white/90 font-semibold drop-shadow-md">
+          <p className="text-center text-xl md:text-2xl text-white/90 font-semibold drop-shadow-md mb-4">
             Your Health Adventure Starts Today! ✨
           </p>
+          <div className="flex justify-center">
+            <PdfUploadButton onTasksGenerated={handleTasksGenerated} />
+          </div>
         </div>
       </div>
 

@@ -154,13 +154,34 @@ export function QuestList({ tasks, onTaskToggle }: QuestListProps) {
   }, []);
 
   // Merge quest data with actual task state from props
-  const quests = questData.map((quest) => {
+  // First, get tasks that match questData
+  const matchedQuests = questData.map((quest) => {
     const task = tasks.find((t) => t.id === quest.id);
     return {
       ...quest,
       completed: task?.completed ?? quest.completed,
     };
   });
+
+  // Then, get tasks that don't match any questData (AI-generated tasks)
+  const unmatchedTasks = tasks.filter(
+    (task) => !questData.some((quest) => quest.id === task.id)
+  );
+
+  // Convert unmatched tasks to quest format with default values
+  const aiQuests = unmatchedTasks.map((task) => ({
+    id: task.id,
+    title: task.title,
+    emoji: "📋", // Default emoji for AI-generated tasks
+    points: task.points,
+    descriptionUncompleted: `Complete this health task!`,
+    descriptionCompleted: "✨ Great job completing this task!",
+    completed: task.completed,
+    isNew: true, // Mark AI-generated tasks as new
+  }));
+
+  // Combine matched and unmatched quests
+  const quests = [...matchedQuests, ...aiQuests];
 
   const handleQuestClick = (questId: string, e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -170,8 +191,8 @@ export function QuestList({ tasks, onTaskToggle }: QuestListProps) {
     const currentQuest = quests.find((q) => q.id === questId);
     const wasCompleted = currentQuest?.completed ?? false;
     
-    // Get quest data for points
-    const questInfo = questData.find((q) => q.id === questId);
+    // Get quest data for points (from either questData or aiQuests)
+    const questInfo = quests.find((q) => q.id === questId);
     
     // Toggle the quest
     onTaskToggle(questId);
